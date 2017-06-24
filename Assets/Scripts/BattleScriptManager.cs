@@ -20,10 +20,7 @@ class BattleScriptManager
 
     private LuaFileUtils InitLoader()
     {
-        if (LuaFileUtils.Instance != null)
-            return LuaFileUtils.Instance;
-
-        return null;
+        return new LuaResLoader();
     }
 
     private void OpenLibs()
