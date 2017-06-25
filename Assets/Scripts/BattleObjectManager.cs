@@ -4,21 +4,21 @@ using UnityEngine;
 
 public class BattleObjectManager
 {
-    Dictionary<BattleObjectType, List<BattleObject>> objListDict;
+    List<BattleObject>[] objListArray;
 
     public void Init()
     {
-        objListDict = new Dictionary<BattleObjectType, List<BattleObject>>();
+        objListArray = new List<BattleObject>[(int)BattleObjectType.Max - 1];
     }
 
     public void AddObject(BattleObject obj)
     {
         BattleObjectType objType = obj.objectType;
-        List<BattleObject> objList;
-        if (!objListDict.TryGetValue(objType, out objList))
+        List<BattleObject> objList = objListArray[(int)objType - 1];
+        if (objList == null)
         {
             objList = new List<BattleObject>();
-            objListDict.Add(objType, objList);
+            objListArray[(int)objType - 1] = objList;
         }
         objList.Add(obj);
     }
@@ -26,8 +26,8 @@ public class BattleObjectManager
     public void RemoveObject(BattleObject obj)
     {
         BattleObjectType objType = obj.objectType;
-        List<BattleObject> objList;
-        if (objListDict.TryGetValue(objType, out objList))
+        List<BattleObject> objList = objListArray[(int)objType - 1];
+        if (objList != null)
         {
             objList.Remove(obj);
         }
@@ -35,9 +35,7 @@ public class BattleObjectManager
 
     public List<BattleObject> GetObjectList(BattleObjectType objType)
     {
-        List<BattleObject> objList;
-        objListDict.TryGetValue(objType, out objList);
-        return objList;
+        return objListArray[(int)objType - 1];
     }
 
     public void Update()
@@ -48,8 +46,9 @@ public class BattleObjectManager
 
     private void CheckCollisionPair(BattleObjectType type1, BattleObjectType type2)
     {
-        List<BattleObject> objList1, objList2;
-        if (objListDict.TryGetValue(type1, out objList1) && objListDict.TryGetValue(type2, out objList2))
+        List<BattleObject> objList1 = objListArray[(int)type1 - 1];
+        List<BattleObject> objList2 = objListArray[(int)type2 - 1];
+        if (objList1 != null && objList2 != null)
         {
             foreach (BattleObject obj1 in objList1)
             {
