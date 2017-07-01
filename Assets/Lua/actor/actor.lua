@@ -1,5 +1,8 @@
 local Actor = Class(function (self, name)
-    self.obj = GStageMgr:SpawnObject(name)
+    self.name = name
+    self.obj = GObjectMgr:SpawnObject(name)
+    self.instanceID = self.obj:GetInstanceID()
+    self.ability = GObjectMgr:GetCompCache(self.instanceID)
     self.transform = self.obj.transform
 
     -----   transform value   -----
@@ -27,9 +30,12 @@ end
 
 function Actor:Destroy()
     self.valid = false
+    GObjectMgr:DespawnObject(self.name, self.obj)
+    GObjectMgr:AddCompCache(self.instanceID, self.ability)
 
     self.obj = nil
     self.transform = nil
+    self.ability = nil
 end
 
 return Actor

@@ -65,9 +65,12 @@ public class BattleStageManager : MonoBehaviour
         return resourceManager.Spawn(name);
     }
 
-    public void DespawnObject(GameObject obj)
+    public void DespawnObject(GameObject obj, bool scriptDespawn = false)
     {
-        resourceManager.Despawn(obj);
+        if (scriptDespawn)
+            scriptManager.Despawn(obj);
+        else
+            resourceManager.Despawn(obj);
     }
 
     public BattleObjectManager GetBattleManager()

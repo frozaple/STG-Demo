@@ -3,7 +3,9 @@ local Actor = require("actor/actor")
 local Enemy = Class(Actor, function (self, name)
     Actor.ctor(self, name)
 
-    self.ability = self.obj:GetComponent(typeof(Enemy))
+    if not self.ability then
+        self.ability = self.obj:GetComponent(typeof(Enemy))
+    end
 
     -----   ability value   -----
     self.hp = 0

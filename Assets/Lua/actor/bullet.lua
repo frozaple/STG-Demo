@@ -3,12 +3,12 @@ local Actor = require("actor/actor")
 local Bullet = Class(Actor, function (self, name)
     Actor.ctor(self, name)
 
-    self.ability = self.obj:GetComponent(typeof(EnemyBullet))
+    if not self.ability then
+        self.ability = self.obj:GetComponent(typeof(EnemyBullet))
+    end
 
     -----   ability value   -----
     self.speed = 0
-
-    self.customUpdate = false
 end)
 
 function Bullet:SetSpeed(speed)

@@ -32,6 +32,7 @@ public class BattleObject : MonoBehaviour
     [HideInInspector]
     public bool valid = true;
     protected bool destroy = false;
+    protected bool useScript = false;
 
     protected void OnEnable()
     {
@@ -48,7 +49,7 @@ public class BattleObject : MonoBehaviour
     void LateUpdate()
     {
         if (destroy)
-            BattleStageManager.Instance.DespawnObject(gameObject);
+            BattleStageManager.Instance.DespawnObject(gameObject, useScript);
     }
 
     void OnDrawGizmos()

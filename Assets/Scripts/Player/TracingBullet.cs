@@ -34,7 +34,7 @@ public class TracingBullet : BattleObject
         float posY = transform.localPosition.y;
         if (posX < movingBorder.left || posX > movingBorder.right ||
             posY < movingBorder.bottom || posY > movingBorder.top)
-            BattleStageManager.Instance.DespawnObject(gameObject);
+            destroy = true;
     }
 
     private void ProcessTracing()

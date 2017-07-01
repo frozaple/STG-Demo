@@ -7,6 +7,11 @@ public class EnemyBullet : BattleObject
     public float speed;
     public MovingBorder movingBorder;
 
+    void Awake()
+    {
+        useScript = true;
+    }
+
     void Update()
     {
         transform.Translate(0, speed * Time.timeScale, 0);
@@ -19,7 +24,7 @@ public class EnemyBullet : BattleObject
         float posY = transform.localPosition.y;
         if (posX < movingBorder.left || posX > movingBorder.right ||
             posY < movingBorder.bottom || posY > movingBorder.top)
-            BattleStageManager.Instance.DespawnObject(gameObject);
+            destroy = true;
     }
 
     override public void OnCollision(BattleObject target)

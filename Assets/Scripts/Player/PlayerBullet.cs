@@ -12,7 +12,7 @@ public class PlayerBullet : BattleObject
         if (transform.position.y < 240)
             transform.Translate(flySpeed * Time.timeScale, 0, 0);
         else
-            BattleStageManager.Instance.DespawnObject(gameObject);
+            destroy = true;
     }
 
     public override void OnCollision(BattleObject target)

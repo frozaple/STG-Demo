@@ -6,6 +6,7 @@ class BattleScriptManager
 {
     private LuaState luaState;
     private LuaFunction updateFunc;
+    private LuaFunction despawnFunc;
 
     public void Init()
     {
@@ -15,7 +16,7 @@ class BattleScriptManager
         luaState.LuaSetTop(0);
         Bind();
         StartMain();
-        StartUpdate();
+        StartFunc();
     }
 
     private LuaFileUtils InitLoader()
@@ -45,9 +46,10 @@ class BattleScriptManager
         main = null;
     }
 
-    private void StartUpdate()
+    private void StartFunc()
     {
         updateFunc = luaState.GetFunction("Update");
+        despawnFunc = luaState.GetFunction("Despawn");
     }
 
     public void Update()
@@ -58,10 +60,20 @@ class BattleScriptManager
         updateFunc.EndPCall();
     }
 
+    public void Despawn(GameObject obj)
+    {
+        despawnFunc.BeginPCall();
+        despawnFunc.Push(obj.GetInstanceID());
+        despawnFunc.PCall();
+        despawnFunc.EndPCall();
+    }
+
     public void Dispose()
     {
         updateFunc.Dispose();
         updateFunc = null;
+        despawnFunc.Dispose();
+        despawnFunc = null;
 
         luaState.Dispose();
         luaState = null;

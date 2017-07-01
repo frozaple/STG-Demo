@@ -5,4 +5,9 @@ using UnityEngine;
 public class Enemy : BattleObject
 {
     public int hp = 0;
+
+    void Awake()
+    {
+        useScript = true;
+    }
 }
