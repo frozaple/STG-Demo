@@ -9,6 +9,7 @@ public class TracingBullet : BattleObject
     public float speedDelta;
     public float angleSpeed;
     public MovingBorder movingBorder;
+    public int damage;
 
     private float curSpeed;
     private float radSpeed;
@@ -61,6 +62,7 @@ public class TracingBullet : BattleObject
 
         if (tracingEnemy != null)
         {
+            disVec = tracingEnemy.transform.position - transform.position;
             disVec.Normalize();
             transform.right = Vector3.RotateTowards(transform.right, disVec, radSpeed, 0f);
             if (Vector3.Dot(transform.right, disVec) < accelCos)

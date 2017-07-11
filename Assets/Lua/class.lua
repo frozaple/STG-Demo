@@ -4,15 +4,15 @@ function Class(base, ctor)
         base = nil
     end
 
-    local class = {ctor = ctor}
+    local class = {ctor = ctor, base = base}
     class.__index = class
 
     local meta = {__index = base}
     meta.__call = function (_, ...)
         local instance = {}
+        setmetatable(instance, class)
         -- should call base class's constructor by itself
         class.ctor(instance, ...)
-        setmetatable(instance, class)
         return instance
     end
 

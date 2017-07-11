@@ -7,12 +7,67 @@ public class EnemyBulletWrap
 	public static void Register(LuaState L)
 	{
 		L.BeginClass(typeof(EnemyBullet), typeof(BattleObject));
+		L.RegFunction("SetAppearance", SetAppearance);
+		L.RegFunction("SetSelfRotate", SetSelfRotate);
+		L.RegFunction("SetRotation", SetRotation);
 		L.RegFunction("OnCollision", OnCollision);
 		L.RegFunction("__eq", op_Equality);
 		L.RegFunction("__tostring", ToLua.op_ToString);
 		L.RegVar("speed", get_speed, set_speed);
 		L.RegVar("movingBorder", get_movingBorder, set_movingBorder);
 		L.EndClass();
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int SetAppearance(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 3);
+			EnemyBullet obj = (EnemyBullet)ToLua.CheckObject(L, 1, typeof(EnemyBullet));
+			int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
+			int arg1 = (int)LuaDLL.luaL_checknumber(L, 3);
+			obj.SetAppearance(arg0, arg1);
+			return 0;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int SetSelfRotate(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 2);
+			EnemyBullet obj = (EnemyBullet)ToLua.CheckObject(L, 1, typeof(EnemyBullet));
+			bool arg0 = LuaDLL.luaL_checkboolean(L, 2);
+			obj.SetSelfRotate(arg0);
+			return 0;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int SetRotation(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 2);
+			EnemyBullet obj = (EnemyBullet)ToLua.CheckObject(L, 1, typeof(EnemyBullet));
+			float arg0 = (float)LuaDLL.luaL_checknumber(L, 2);
+			obj.SetRotation(arg0);
+			return 0;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]

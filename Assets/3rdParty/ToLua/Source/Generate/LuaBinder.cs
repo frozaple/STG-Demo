@@ -11,9 +11,9 @@ public static class LuaBinder
 		L.BeginModule(null);
 		LuaInterface_DebuggerWrap.Register(L);
 		BattleStageManagerWrap.Register(L);
+		BattleObjectWrap.Register(L);
 		EnemyWrap.Register(L);
 		EnemyBulletWrap.Register(L);
-		BattleObjectWrap.Register(L);
 		L.BeginModule("UnityEngine");
 		UnityEngine_ComponentWrap.Register(L);
 		UnityEngine_TransformWrap.Register(L);

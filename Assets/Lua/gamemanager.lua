@@ -1,8 +1,10 @@
-local Enemy = require("actor/enemy")
 local Bullet = require("actor/bullet")
+local LevelScript = require("level/levelscript")
 
 local GameManager = Class(function (self)
     self.script = nil
+    self.enemyClass = {}
+    self.bulletClass = {}
 
     self.enemy = {}
     self.bullet = {}
@@ -11,18 +13,29 @@ local GameManager = Class(function (self)
     self.ID2Bullet = {}
 end)
 
-function GameManager:SpawnEnemy(enemyName)
-    local enemyActor = Enemy(enemyName)
-    table.insert(self.enemy, enemyActor)
-    self.ID2Enemy[enemyActor.instanceID] = enemyActor
-    return enemyActor
+function GameManager:LoadScript()
+    self.script = LevelScript()
+    self.script:Initialize()
 end
 
-function GameManager:SpawnBullet(bulletName)
-    local bulletActor = Bullet(bulletName)
-    table.insert(self.bullet, bulletActor)
-    self.ID2Bullet[bulletActor.instanceID] = bulletActor
-    return bulletActor
+local function ExecSpawn(classList, actorList, ID2Actor, actorName, ...)
+    local actorClass = classList[actorName]
+    if not actorClass then
+        actorClass = require("actor/" .. actorName)
+        classList[actorName] = actorClass
+    end
+    local actor = actorClass(...)
+    table.insert(actorList, actor)
+    ID2Actor[actor.instanceID] = actor
+    return actor
+end
+
+function GameManager:SpawnEnemy(enemyName, ...)
+    return ExecSpawn(self.enemyClass, self.enemy, self.ID2Enemy, enemyName, ...)
+end
+
+function GameManager:SpawnBullet(bulletName, ...)
+    return ExecSpawn(self.bulletClass, self.bullet, self.ID2Bullet, bulletName, ...)
 end
 
 local function ExecUpdate(list, timeScale)
@@ -37,6 +50,7 @@ local function ExecUpdate(list, timeScale)
 end
 
 function GameManager:Update(timeScale)
+    self.script:Update(timeScale)
     ExecUpdate(self.enemy, timeScale)
     ExecUpdate(self.bullet, timeScale)
 end

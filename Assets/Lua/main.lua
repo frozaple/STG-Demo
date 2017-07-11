@@ -5,8 +5,7 @@ GObjectMgr = require("objectmanager")()
 GGameMgr = require("gamemanager")()
 
 function Main()
-    local enemy = GGameMgr:SpawnEnemy("Enemy/LittleFairyBlue")
-    enemy:SetPosition(320, 360)
+    GGameMgr:LoadScript()
 end
 
 function Update(timeScale)

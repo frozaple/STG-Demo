@@ -12,6 +12,9 @@ public class BattleStageManagerWrap
 		L.RegFunction("GetBattleManager", GetBattleManager);
 		L.RegFunction("AddBattleObject", AddBattleObject);
 		L.RegFunction("RemoveBattleObject", RemoveBattleObject);
+		L.RegFunction("GetBulletSprite", GetBulletSprite);
+		L.RegFunction("GetPlayerAngle", GetPlayerAngle);
+		L.RegFunction("GetRandom", GetRandom);
 		L.RegFunction("__eq", op_Equality);
 		L.RegFunction("__tostring", ToLua.op_ToString);
 		L.RegVar("Instance", get_Instance, null);
@@ -41,10 +44,11 @@ public class BattleStageManagerWrap
 	{
 		try
 		{
-			ToLua.CheckArgsCount(L, 2);
+			ToLua.CheckArgsCount(L, 3);
 			BattleStageManager obj = (BattleStageManager)ToLua.CheckObject(L, 1, typeof(BattleStageManager));
 			UnityEngine.GameObject arg0 = (UnityEngine.GameObject)ToLua.CheckUnityObject(L, 2, typeof(UnityEngine.GameObject));
-			obj.DespawnObject(arg0);
+			bool arg1 = LuaDLL.luaL_checkboolean(L, 3);
+			obj.DespawnObject(arg0, arg1);
 			return 0;
 		}
 		catch(Exception e)
@@ -97,6 +101,63 @@ public class BattleStageManagerWrap
 			BattleObject arg0 = (BattleObject)ToLua.CheckUnityObject(L, 2, typeof(BattleObject));
 			obj.RemoveBattleObject(arg0);
 			return 0;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int GetBulletSprite(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 3);
+			BattleStageManager obj = (BattleStageManager)ToLua.CheckObject(L, 1, typeof(BattleStageManager));
+			int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
+			int arg1 = (int)LuaDLL.luaL_checknumber(L, 3);
+			UnityEngine.Sprite o = obj.GetBulletSprite(arg0, arg1);
+			ToLua.Push(L, o);
+			return 1;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int GetPlayerAngle(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 3);
+			BattleStageManager obj = (BattleStageManager)ToLua.CheckObject(L, 1, typeof(BattleStageManager));
+			float arg0 = (float)LuaDLL.luaL_checknumber(L, 2);
+			float arg1 = (float)LuaDLL.luaL_checknumber(L, 3);
+			float o = obj.GetPlayerAngle(arg0, arg1);
+			LuaDLL.lua_pushnumber(L, o);
+			return 1;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int GetRandom(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 3);
+			BattleStageManager obj = (BattleStageManager)ToLua.CheckObject(L, 1, typeof(BattleStageManager));
+			int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
+			int arg1 = (int)LuaDLL.luaL_checknumber(L, 3);
+			int o = obj.GetRandom(arg0, arg1);
+			LuaDLL.lua_pushinteger(L, o);
+			return 1;
 		}
 		catch(Exception e)
 		{

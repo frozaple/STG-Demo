@@ -7,10 +7,29 @@ public class EnemyWrap
 	public static void Register(LuaState L)
 	{
 		L.BeginClass(typeof(Enemy), typeof(BattleObject));
+		L.RegFunction("OnCollision", OnCollision);
 		L.RegFunction("__eq", op_Equality);
 		L.RegFunction("__tostring", ToLua.op_ToString);
 		L.RegVar("hp", get_hp, set_hp);
+		L.RegVar("movingBorder", get_movingBorder, set_movingBorder);
 		L.EndClass();
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int OnCollision(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 2);
+			Enemy obj = (Enemy)ToLua.CheckObject(L, 1, typeof(Enemy));
+			BattleObject arg0 = (BattleObject)ToLua.CheckUnityObject(L, 2, typeof(BattleObject));
+			obj.OnCollision(arg0);
+			return 0;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
@@ -51,6 +70,25 @@ public class EnemyWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_movingBorder(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			Enemy obj = (Enemy)o;
+			MovingBorder ret = obj.movingBorder;
+			ToLua.PushValue(L, ret);
+			return 1;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o == null ? "attempt to index movingBorder on a nil value" : e.Message);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static int set_hp(IntPtr L)
 	{
 		object o = null;
@@ -66,6 +104,25 @@ public class EnemyWrap
 		catch(Exception e)
 		{
 			return LuaDLL.toluaL_exception(L, e, o == null ? "attempt to index hp on a nil value" : e.Message);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int set_movingBorder(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			Enemy obj = (Enemy)o;
+			MovingBorder arg0 = (MovingBorder)ToLua.CheckObject(L, 2, typeof(MovingBorder));
+			obj.movingBorder = arg0;
+			return 0;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o == null ? "attempt to index movingBorder on a nil value" : e.Message);
 		}
 	}
 }

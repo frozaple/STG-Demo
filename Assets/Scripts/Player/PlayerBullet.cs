@@ -6,6 +6,7 @@ public class PlayerBullet : BattleObject
 {
     public float flySpeed;
     public bool mainBullet;
+    public int damage;
 
     void Update ()
     {
