@@ -34,6 +34,7 @@ public class PlayerBullet : BattleObject
             effPos.y = target.transform.position.y;
             bulletEff.transform.position = effPos;
         }
+        BattleStageManager.Instance.GetPlayerManager().playerScore += 10;
         destroy = true;
     }
 }

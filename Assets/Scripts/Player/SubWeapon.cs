@@ -65,10 +65,13 @@ public class SubWeapon : MonoBehaviour {
 
     public void SetTamaNum(int num)
     {
-        tamaNum = num;
-        for (int i = 0; i < tama.Length; i++)
-            tama[i].SetActive(i < num);
-        SetTamaPos(subWeaponLerp);
+        if (tamaNum != num)
+        {
+            tamaNum = num;
+            for (int i = 0; i < tama.Length; i++)
+                tama[i].SetActive(i < num);
+            SetTamaPos(subWeaponLerp);
+        }
     }
 
     public void Shoot()

@@ -88,6 +88,7 @@ public class TracingBullet : BattleObject
         GameObject bulletEff = BattleStageManager.Instance.SpawnObject("Player/Bullet/TracingBulletEffect");
         bulletEff.transform.position = transform.position;
         bulletEff.transform.eulerAngles = transform.eulerAngles;
+        BattleStageManager.Instance.GetPlayerManager().playerScore += 10;
         destroy = true;
     }
 }

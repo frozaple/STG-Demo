@@ -17,7 +17,7 @@ public class Stage1Background : MonoBehaviour
     public Material fogMaterial;
     private Mesh[] fogMesh;
 
-    private void Awake()
+    void Awake()
     {
         flowerMeshes = new Mesh[9];
         Vector3[] rectVerts = new Vector3[] {
@@ -71,14 +71,14 @@ public class Stage1Background : MonoBehaviour
         Vector3[] fogVerts = new Vector3[] {
             new Vector3(-10, 0, -12),
             new Vector3(-10, 10, -12),
-            new Vector3(-8, 0, 0),
-            new Vector3(-8, 10, 0),
-            new Vector3(-2, 0, 5),
-            new Vector3(-2, 10, 5),
-            new Vector3(2, 0, 5),
-            new Vector3(2, 10, 5),
-            new Vector3(8, 0, 0),
-            new Vector3(8, 10, 0),
+            new Vector3(-8, 0, 2),
+            new Vector3(-8, 10, 2),
+            new Vector3(-2, 0, 10),
+            new Vector3(-2, 10, 10),
+            new Vector3(2, 0, 10),
+            new Vector3(2, 10, 10),
+            new Vector3(8, 0, 2),
+            new Vector3(8, 10, 2),
             new Vector3(10, 0, -12),
             new Vector3(10, 10, -12),
         };
@@ -96,7 +96,7 @@ public class Stage1Background : MonoBehaviour
         };
         Color[] fogColors = new Color[fogVerts.Length];
         for (int i = 0; i < fogColors.Length; i++)
-            fogColors[i] = Color.white;
+            fogColors[i] = new Color(0.95f, 0.95f, 1f);
 
         GameObject fogs = new GameObject("Fogs");
         fogs.transform.parent = transform;
@@ -136,5 +136,13 @@ public class Stage1Background : MonoBehaviour
                 offset.z += 30f;
             flowerTrans[i].position = offset;
         }
+    }
+
+    void OnDestroy()
+    {
+        for (int i = 0; i < flowerMeshes.Length; i++)
+            DestroyImmediate(flowerMeshes[i]);
+        for (int i = 0; i < fogMesh.Length; i++)
+            DestroyImmediate(fogMesh[i]);
     }
 }

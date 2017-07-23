@@ -18,9 +18,9 @@ public class BattleStageManager : MonoBehaviour
     private BattleObjectManager battleManager;
     private BattleScriptManager scriptManager;
     private SpriteManager spriteManager;
+    private PlayerStateManager playerManager;
 
     private System.Random battleRandom;
-    private GameObject playerObj;
 
     void Awake()
     {
@@ -33,6 +33,7 @@ public class BattleStageManager : MonoBehaviour
         scriptManager.Init();
         spriteManager = new SpriteManager();
         spriteManager.InitSprites();
+        playerManager = new PlayerStateManager();
     }
 
     void Start()
@@ -40,20 +41,8 @@ public class BattleStageManager : MonoBehaviour
         Application.targetFrameRate = 60;
         Screen.SetResolution(960, 720, false);
 
-        InitPlayer();
+        playerManager.InitPlayer();
         battleRandom = new System.Random();
-    }
-
-    private void InitPlayer()
-    {
-        playerObj = Instantiate(Resources.Load<GameObject>("Player/Player"));
-        GameObject subWeaponObj = Instantiate(Resources.Load<GameObject>("Player/SubWeapon"));
-        playerObj.transform.SetParent(transform);
-        subWeaponObj.transform.SetParent(transform);
-
-        SubWeapon subWeapon = subWeaponObj.GetComponent<SubWeapon>();
-        playerObj.GetComponent<PlayerController>().subWeapon = subWeapon;
-        subWeapon.playerTrans = playerObj.transform;
     }
 
     void Update()
@@ -100,11 +89,14 @@ public class BattleStageManager : MonoBehaviour
         return spriteManager.GetBulletSprite(shape, color);
     }
 
+    public PlayerStateManager GetPlayerManager()
+    {
+        return playerManager;
+    }
+
     public float GetPlayerAngle(float posX, float posY)
     {
-        Vector3 disVec = playerObj.transform.localPosition - new Vector3(posX, posY, 0);
-        float angle = Vector3.Angle(Vector3.up, disVec);
-        return disVec.x < 0 ? angle : -angle;
+        return playerManager.GetPlayerAngle(posX, posY);
     }
 
     public int GetRandom(int min, int max)

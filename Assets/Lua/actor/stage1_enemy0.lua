@@ -5,7 +5,7 @@ local BulletColor = BulletEnum.Color
 
 local Stage1_Enemy0 = Class(Enemy, function (self)
     Enemy.ctor(self, "Enemy/LittleFairyBlue")
-    self:SetHp(300)
+    self:SetHp(150)
 
     self.shootTime1 = 0
     self.shootGap1 = 10
