@@ -21,8 +21,12 @@ public class BattleUI : MonoBehaviour {
     private int lastLife;
     private int lastSpell;
     private int lastPower;
-    private int lastScore;
     private int lastMaxPoint;
+
+    private const int scoreIntervalLength = 20;
+    private int lastScore;
+    private int targetScore;
+    private int scoreInterval;
 
     private PlayerStateManager playerManager;
 
@@ -84,9 +88,26 @@ public class BattleUI : MonoBehaviour {
 
     private void UpdateScore()
     {
-        if (lastScore != playerManager.playerScore)
+        if (targetScore != playerManager.playerScore)
         {
-            lastScore = playerManager.playerScore;
+            targetScore = playerManager.playerScore;
+            scoreInterval = scoreIntervalLength;
+        }
+        if (lastScore != targetScore)
+        {
+            if (scoreInterval > 1)
+            {
+                scoreInterval--;
+                if (scoreInterval > 1)
+                {
+                    int delta = targetScore - lastScore;
+                    int divideVal = (1 + scoreInterval) * scoreInterval * 5;
+                    lastScore += delta * scoreInterval / divideVal * 10 + 10;
+                }
+            }
+            if (scoreInterval <= 1)
+                lastScore = targetScore;
+
             int score = lastScore;
             int digit = 0;
             for (int i = 0; i < imgScoreNum.Length; i++)

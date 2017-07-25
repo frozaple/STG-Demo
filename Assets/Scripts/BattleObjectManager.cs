@@ -41,6 +41,7 @@ public class BattleObjectManager
     public void Update()
     {
         CheckCollisionPair(BattleObjectType.Player, BattleObjectType.EnemyBullet);
+        CheckCollisionPair(BattleObjectType.Player, BattleObjectType.Item);
         CheckCollisionPair(BattleObjectType.Enemy, BattleObjectType.PlayerBullet);
     }
 

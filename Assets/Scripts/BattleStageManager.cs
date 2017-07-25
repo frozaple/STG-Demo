@@ -94,6 +94,11 @@ public class BattleStageManager : MonoBehaviour
         return playerManager;
     }
 
+    public Vector3 GetPlayerPos()
+    {
+        return playerManager.GetPlayerPos();
+    }
+
     public float GetPlayerAngle(float posX, float posY)
     {
         return playerManager.GetPlayerAngle(posX, posY);

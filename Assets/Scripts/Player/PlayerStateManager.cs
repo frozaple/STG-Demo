@@ -34,6 +34,11 @@ public class PlayerStateManager
         maxPoint = 10000;
     }
 
+    public Vector3 GetPlayerPos()
+    {
+        return playerObj.transform.position;
+    }
+
     public float GetPlayerAngle(float posX, float posY)
     {
         Vector3 disVec = playerObj.transform.localPosition - new Vector3(posX, posY, 0);

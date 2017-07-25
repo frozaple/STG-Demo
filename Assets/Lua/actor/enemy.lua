@@ -18,6 +18,12 @@ function Enemy:SetHp(hp)
     end
 end
 
+function Enemy:SetDrop(power, score, special)
+    self.ability.powerDrop = power
+    self.ability.scoreDrop = score
+    self.ability.specialDrop = special or 0
+end
+
 local function SpawnBullet(bulletName, params)
     if params then
         return GGameMgr:SpawnBullet(bulletName, unpack(params))

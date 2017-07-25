@@ -12,6 +12,10 @@ public class EnemyWrap
 		L.RegFunction("__tostring", ToLua.op_ToString);
 		L.RegVar("hp", get_hp, set_hp);
 		L.RegVar("movingBorder", get_movingBorder, set_movingBorder);
+		L.RegVar("powerDrop", get_powerDrop, set_powerDrop);
+		L.RegVar("scoreDrop", get_scoreDrop, set_scoreDrop);
+		L.RegVar("specialDrop", get_specialDrop, set_specialDrop);
+		L.RegVar("dropRange", get_dropRange, set_dropRange);
 		L.EndClass();
 	}
 
@@ -89,6 +93,82 @@ public class EnemyWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_powerDrop(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			Enemy obj = (Enemy)o;
+			int ret = obj.powerDrop;
+			LuaDLL.lua_pushinteger(L, ret);
+			return 1;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o == null ? "attempt to index powerDrop on a nil value" : e.Message);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_scoreDrop(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			Enemy obj = (Enemy)o;
+			int ret = obj.scoreDrop;
+			LuaDLL.lua_pushinteger(L, ret);
+			return 1;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o == null ? "attempt to index scoreDrop on a nil value" : e.Message);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_specialDrop(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			Enemy obj = (Enemy)o;
+			int ret = obj.specialDrop;
+			LuaDLL.lua_pushinteger(L, ret);
+			return 1;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o == null ? "attempt to index specialDrop on a nil value" : e.Message);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_dropRange(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			Enemy obj = (Enemy)o;
+			int ret = obj.dropRange;
+			LuaDLL.lua_pushinteger(L, ret);
+			return 1;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o == null ? "attempt to index dropRange on a nil value" : e.Message);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static int set_hp(IntPtr L)
 	{
 		object o = null;
@@ -123,6 +203,82 @@ public class EnemyWrap
 		catch(Exception e)
 		{
 			return LuaDLL.toluaL_exception(L, e, o == null ? "attempt to index movingBorder on a nil value" : e.Message);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int set_powerDrop(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			Enemy obj = (Enemy)o;
+			int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
+			obj.powerDrop = arg0;
+			return 0;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o == null ? "attempt to index powerDrop on a nil value" : e.Message);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int set_scoreDrop(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			Enemy obj = (Enemy)o;
+			int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
+			obj.scoreDrop = arg0;
+			return 0;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o == null ? "attempt to index scoreDrop on a nil value" : e.Message);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int set_specialDrop(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			Enemy obj = (Enemy)o;
+			int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
+			obj.specialDrop = arg0;
+			return 0;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o == null ? "attempt to index specialDrop on a nil value" : e.Message);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int set_dropRange(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			Enemy obj = (Enemy)o;
+			int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
+			obj.dropRange = arg0;
+			return 0;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o == null ? "attempt to index dropRange on a nil value" : e.Message);
 		}
 	}
 }
