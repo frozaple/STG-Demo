@@ -21,7 +21,19 @@ public class PlayerController : BattleObject
     public float shootGap;
     private float shootAccumulation = 0;
 
-    void Update ()
+    private Animator animator;
+    private int speedParamID;
+    private int slowEffParamID;
+    public GameObject slowEffect;
+
+    void Awake()
+    {
+        animator = GetComponent<Animator>();
+        speedParamID = Animator.StringToHash("Horizontal Speed");
+        slowEffParamID = Animator.StringToHash("SlowEff Show");
+    }
+
+    void Update()
     {
         PlayerMove();
         PlayerShoot();
@@ -33,18 +45,25 @@ public class PlayerController : BattleObject
         float horizontalInput = Input.GetAxisRaw("Horizontal");
         float slowInput = Input.GetAxis("Slow");
 
-        GetComponent<Animator>().SetFloat("Horizontal Speed", horizontalInput);
+        animator.SetFloat(speedParamID, horizontalInput);
         Vector3 moveVector = new Vector3(horizontalInput, verticalInput, 0);
         moveVector.Normalize();
         if (slowInput > 0)
         {
             subWeapon.SetLerp(subWeaponLerpSpeed * Time.timeScale);
             transform.Translate(moveVector * slowMoveSpeed * Time.timeScale);
+            if (!slowEffect.activeSelf)
+            {
+                animator.SetTrigger(slowEffParamID);
+                slowEffect.SetActive(true);
+            }
         }
         else
         {
             subWeapon.SetLerp(-subWeaponLerpSpeed * Time.timeScale);
             transform.Translate(moveVector * moveSpeed * Time.timeScale);
+            if (slowEffect.activeSelf)
+                slowEffect.SetActive(false);
         }
 
         moveVector.x = Mathf.Clamp(transform.localPosition.x, movingBorder.left, movingBorder.right);

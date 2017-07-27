@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class BattleUI : MonoBehaviour {
     public GameObject lifeUI;
@@ -9,14 +8,14 @@ public class BattleUI : MonoBehaviour {
     public GameObject scoreUI;
     public GameObject maxPointUI;
 
-    public Image[] imgPowerNum;
+    public SpriteRenderer[] imgPowerNum;
     public Sprite[] UINumSprite;
 
-    private Image[] imgLife;
-    private Image[] imgSpell;
-    private Image[] imgScoreDot;
-    private Image[] imgScoreNum;
-    private Image[] imgMaxPointNum;
+    private SpriteRenderer[] imgLife;
+    private SpriteRenderer[] imgSpell;
+    private SpriteRenderer[] imgScoreDot;
+    private SpriteRenderer[] imgScoreNum;
+    private SpriteRenderer[] imgMaxPointNum;
 
     private int lastLife;
     private int lastSpell;
@@ -32,11 +31,11 @@ public class BattleUI : MonoBehaviour {
 
     void Start()
     {
-        imgLife = lifeUI.GetComponentsInChildren<Image>();
-        imgSpell = spellUI.GetComponentsInChildren<Image>();
-        imgScoreDot = scoreUI.transform.FindChild("Dot").GetComponentsInChildren<Image>();
-        imgScoreNum = scoreUI.transform.FindChild("Num").GetComponentsInChildren<Image>();
-        imgMaxPointNum = maxPointUI.GetComponentsInChildren<Image>();
+        imgLife = lifeUI.GetComponentsInChildren<SpriteRenderer>();
+        imgSpell = spellUI.GetComponentsInChildren<SpriteRenderer>();
+        imgScoreDot = scoreUI.transform.FindChild("Dot").GetComponentsInChildren<SpriteRenderer>();
+        imgScoreNum = scoreUI.transform.FindChild("Num").GetComponentsInChildren<SpriteRenderer>();
+        imgMaxPointNum = maxPointUI.GetComponentsInChildren<SpriteRenderer>();
 
         lastScore = -1;
 

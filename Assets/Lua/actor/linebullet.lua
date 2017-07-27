@@ -9,11 +9,11 @@ end)
 
 function LineBullet:Update(timeScale)
     if self.speed > self.targetSpeed then
-        local newSpeed = self.speed - self.speedDelta
+        local newSpeed = self.speed - self.speedDelta * timeScale
         if newSpeed < self.targetSpeed then newSpeed = self.targetSpeed end
         self:SetSpeed(newSpeed)
     elseif self.speed < self.targetSpeed then
-        local newSpeed = self.speed + self.speedDelta
+        local newSpeed = self.speed + self.speedDelta * timeScale
         if newSpeed > self.targetSpeed then newSpeed = self.targetSpeed end
         self:SetSpeed(newSpeed)
     end

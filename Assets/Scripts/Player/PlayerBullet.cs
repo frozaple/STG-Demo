@@ -2,11 +2,20 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerBullet : BattleObject
+public interface DamageObject
+{
+    int Damage { get; }
+}
+
+public class PlayerBullet : BattleObject, DamageObject
 {
     public float flySpeed;
     public bool mainBullet;
     public int damage;
+    public int Damage
+    {
+        get { return damage; }
+    }
 
     void Update ()
     {

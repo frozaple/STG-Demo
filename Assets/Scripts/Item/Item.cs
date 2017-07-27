@@ -44,7 +44,7 @@ public class Item : BattleObject
             if (dis > 0)
             {
                 float flyDis = Mathf.Min(dis, autoFlySpeed);
-                pos += dir / dis * flyDis;
+                pos += dir / dis * flyDis * Time.timeScale;
                 transform.position = pos;
             }
         }
@@ -64,12 +64,12 @@ public class Item : BattleObject
 
             if (dropSpeed < maxDropSpeed)
             {
-                dropSpeed += dropGravity;
+                dropSpeed += dropGravity * Time.timeScale;
                 if (dropSpeed > maxDropSpeed)
                     dropSpeed = maxDropSpeed;
             }
 
-            pos.y -= dropSpeed;
+            pos.y -= dropSpeed * Time.timeScale;
             if (pos.y > -256)
                 transform.position = pos;
             else

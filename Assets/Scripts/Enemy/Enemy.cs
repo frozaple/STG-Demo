@@ -66,17 +66,9 @@ public class Enemy : BattleObject
     {
         if (target.objectType == BattleObjectType.PlayerBullet)
         {
-            PlayerBullet bulletObj = target as PlayerBullet;
-            if (bulletObj != null)
-            {
-                hp -= bulletObj.damage;
-            }
-            else
-            {
-                TracingBullet tracingObj = target as TracingBullet;
-                if (tracingObj != null)
-                    hp -= tracingObj.damage;
-            }
+            DamageObject dmgObj = target as DamageObject;
+            if (dmgObj != null)
+                hp -= dmgObj.Damage;
         }
     }
 }

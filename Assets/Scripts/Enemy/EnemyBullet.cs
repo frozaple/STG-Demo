@@ -20,7 +20,7 @@ public class EnemyBullet : BattleObject
     {
         if (selfRotate)
         {
-            transform.Rotate(0, 0, -3f);
+            transform.Rotate(0, 0, -3f * Time.timeScale);
             if (speed > 0)
                 transform.position += moveDir * speed * Time.timeScale;
         }
