@@ -9,7 +9,6 @@ public enum BattleObjectType
     Enemy = 3,
     EnemyBullet = 4,
     Item = 5,
-    Max = 6,
 }
 
 public enum CollisionType

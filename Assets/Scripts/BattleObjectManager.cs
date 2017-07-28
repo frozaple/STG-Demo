@@ -2,23 +2,36 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public class BattleObjectTypeComparer : IEqualityComparer<BattleObjectType>
+{
+    public bool Equals(BattleObjectType t1, BattleObjectType t2)
+    {
+        return t1 == t2;
+    }
+
+    public int GetHashCode(BattleObjectType t)
+    {
+        return (int)t;
+    }
+}
+
 public class BattleObjectManager
 {
-    List<BattleObject>[] objListArray;
+    Dictionary<BattleObjectType, List<BattleObject>> objListDict;
 
     public void Init()
     {
-        objListArray = new List<BattleObject>[(int)BattleObjectType.Max - 1];
+        objListDict = new Dictionary<BattleObjectType, List<BattleObject>>(new BattleObjectTypeComparer());
     }
 
     public void AddObject(BattleObject obj)
     {
         BattleObjectType objType = obj.objectType;
-        List<BattleObject> objList = objListArray[(int)objType - 1];
-        if (objList == null)
+        List<BattleObject> objList;
+        if (!objListDict.TryGetValue(objType, out objList))
         {
             objList = new List<BattleObject>();
-            objListArray[(int)objType - 1] = objList;
+            objListDict.Add(objType, objList);
         }
         objList.Add(obj);
     }
@@ -26,16 +39,14 @@ public class BattleObjectManager
     public void RemoveObject(BattleObject obj)
     {
         BattleObjectType objType = obj.objectType;
-        List<BattleObject> objList = objListArray[(int)objType - 1];
-        if (objList != null)
-        {
+        List<BattleObject> objList;
+        if (objListDict.TryGetValue(objType, out objList))
             objList.Remove(obj);
-        }
     }
 
     public List<BattleObject> GetObjectList(BattleObjectType objType)
     {
-        return objListArray[(int)objType - 1];
+        return objListDict[objType];
     }
 
     public void Update()
@@ -47,9 +58,8 @@ public class BattleObjectManager
 
     private void CheckCollisionPair(BattleObjectType type1, BattleObjectType type2)
     {
-        List<BattleObject> objList1 = objListArray[(int)type1 - 1];
-        List<BattleObject> objList2 = objListArray[(int)type2 - 1];
-        if (objList1 != null && objList2 != null)
+        List<BattleObject> objList1, objList2;
+        if (objListDict.TryGetValue(type1, out objList1) && objListDict.TryGetValue(type2, out objList2))
         {
             foreach (BattleObject obj1 in objList1)
             {
