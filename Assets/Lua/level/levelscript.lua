@@ -52,6 +52,14 @@ function LevelScript:Initialize()
         local enemy = GGameMgr:SpawnEnemy("stage1_enemy0")
         enemy:SetPosition(608 - i * 32, 480)
     end, 20, 30)
+    self:AddEvent(1200, function (i)
+        local enemy = GGameMgr:SpawnEnemy("stage1_enemy0")
+        enemy:SetPosition(i * 32 + 32, 480)
+    end, 20, 30)
+    self:AddEvent(1800, function (i)
+        local enemy = GGameMgr:SpawnEnemy("stage1_enemy0")
+        enemy:SetPosition(608 - i * 32, 480)
+    end, 20, 30)
 end
 
 return LevelScript

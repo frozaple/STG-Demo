@@ -74,12 +74,18 @@ public class GameResourceManager
     {
         PoolObject poolObj = obj.GetComponent<PoolObject>();
         if (poolObj == null)
+        {
             GameObject.Destroy(obj);
+            return;
+        }
         string name = poolObj.poolName;
         GameObjectPool objPool;
         objectPools.TryGetValue(name, out objPool);
         if (objPool == null)
+        {
             GameObject.Destroy(obj);
+            return;
+        }
         objPool.AddObject(obj);
     }
 }

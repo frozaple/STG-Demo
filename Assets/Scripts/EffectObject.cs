@@ -22,8 +22,11 @@ public class EffectObject : MonoBehaviour
     void OnEnable()
     {
         activeDuration = 0;
-        cachedColor.a = 1;
-        renderer.color = cachedColor;
+        if (alphaLerp)
+        {
+            cachedColor.a = 1;
+            renderer.color = cachedColor;
+        }
     }
 
     void Update () {
