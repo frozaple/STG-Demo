@@ -15,8 +15,6 @@ public class Enemy : BattleObject
     private static Color redBreakEffectColor = new Color(1f, 0.5f, 0.5f, 0.5f);
     private static Color blueBreakEffectColor = new Color(0.5f, 0.5f, 1f, 0.5f);
     private static Color greenBreakEffectColor = new Color(0.5f, 1f, 0.5f, 0.5f);
-    private static int shortDelayHash = Animator.StringToHash("ShortDelay");
-    private static int longDelayHash = Animator.StringToHash("LongDelay");
 
     public int hp;
     public MovingBorder movingBorder;
@@ -83,7 +81,7 @@ public class Enemy : BattleObject
             breakEff.transform.right = randOff;
             breakEff.GetComponent<SpriteRenderer>().color = blueBreakEffectColor;
             if (i > 0)
-                breakEff.GetComponent<Animator>().SetTrigger(i > 1 ? longDelayHash : shortDelayHash);
+                breakEff.GetComponent<EffectObject>().SetDelay(i * 12f);
         }
         for (int i = 0; i < 3; i++)
         {

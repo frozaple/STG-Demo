@@ -9,11 +9,15 @@ public class EffectObject : MonoBehaviour
     public Vector3 moveSpeed;
     public Vector3 beginScale;
     public Vector3 endScale;
+    public Sprite[] animateSprites;
     public bool alphaLerp;
 
     private bool doMove;
     private bool doScale;
+    private bool doAnimate;
+
     private float activeDuration;
+    private int animateIndex;
     private SpriteRenderer spriteRenderer;
     private LineRenderer lineRenderer;
     private Color cachedColor;
@@ -33,15 +37,33 @@ public class EffectObject : MonoBehaviour
             cachedColor = lineRenderer.startColor;
         }
         initAlpha = cachedColor.a;
-    } 
+    }
+
+    public void SetDelay(float delayDuration)
+    {
+        if (delayDuration > 0)
+        {
+            activeDuration = -delayDuration;
+            if (spriteRenderer != null)
+                spriteRenderer.enabled = false;
+            if (lineRenderer != null)
+                lineRenderer.enabled = false;
+        }
+    }
 
     void OnEnable()
     {
         activeDuration = 0;
         doMove = moveSpeed != Vector3.zero;
         doScale = beginScale != endScale;
+        doAnimate = animateSprites.Length > 0;
         if (doScale)
             transform.localScale = beginScale;
+        if (doAnimate && spriteRenderer != null)
+        {
+            animateIndex = 0;
+            spriteRenderer.sprite = animateSprites[0];
+        }
         if (alphaLerp)
         {
             cachedColor.a = initAlpha;
@@ -56,7 +78,17 @@ public class EffectObject : MonoBehaviour
     }
 
     void Update () {
+        bool delayed = activeDuration < 0;
         activeDuration += Time.timeScale;
+        if (delayed)
+        {
+            if (activeDuration < 0)
+                return;
+            if (spriteRenderer != null)
+                spriteRenderer.enabled = true;
+            if (lineRenderer != null)
+                lineRenderer.enabled = true;
+        }
 
         if (doMove)
         {
@@ -69,6 +101,17 @@ public class EffectObject : MonoBehaviour
         if (doScale)
         {
             transform.localScale = Vector3.Lerp(beginScale, endScale, activeDuration / lifeDuration);
+        }
+
+        if (doAnimate && spriteRenderer != null)
+        {
+            int curIndex = (int)(activeDuration / lifeDuration * animateSprites.Length);
+            curIndex = Mathf.Min(curIndex, animateSprites.Length - 1);
+            if (animateIndex != curIndex)
+            {
+                animateIndex = curIndex;
+                spriteRenderer.sprite = animateSprites[animateIndex];
+            }
         }
 
         if (alphaLerp)
