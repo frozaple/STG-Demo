@@ -107,7 +107,7 @@ public class Enemy : BattleObject
     {
         if (target.objectType == BattleObjectType.PlayerBullet)
         {
-            DamageObject dmgObj = target as DamageObject;
+            IDamageObject dmgObj = target as IDamageObject;
             if (dmgObj != null)
                 hp -= dmgObj.Damage;
         }

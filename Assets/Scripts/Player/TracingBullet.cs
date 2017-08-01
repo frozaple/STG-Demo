@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TracingBullet : BattleObject, DamageObject
+public class TracingBullet : BattleObject, IDamageObject
 {
     public float minSpeed;
     public float maxSpeed;

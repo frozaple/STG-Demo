@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public interface DamageObject
+public interface IDamageObject
 {
     int Damage { get; }
 }
 
-public class PlayerBullet : BattleObject, DamageObject
+public class PlayerBullet : BattleObject, IDamageObject
 {
     public float flySpeed;
     public bool mainBullet;

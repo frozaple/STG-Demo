@@ -21,16 +21,21 @@ public class Item : BattleObject
     public float dropGravity;
     public float initDropSpeed;
     public float maxDropSpeed;
+    public float rotateDuration;
+    public AnimationCurve rotationCurve;
 
     private float autoFlySpeed;
     private float dropSpeed;
     private SpriteRenderer itemHint;
+    private float rotateTime;
 
     new void OnEnable()
     {
         base.OnEnable();
         dropSpeed = initDropSpeed;
         autoFlySpeed = 0;
+        rotateTime = 0;
+        transform.eulerAngles = Vector3.zero;
     }
 
     void Update()
@@ -90,6 +95,12 @@ public class Item : BattleObject
         {
             BattleStageManager.Instance.DespawnObject(itemHint.gameObject);
             itemHint = null;
+        }
+        if (rotateTime < rotateDuration)
+        {
+            rotateTime += Time.timeScale;
+            float rot = rotationCurve.Evaluate(rotateTime / rotateDuration);
+            transform.eulerAngles = new Vector3(0, 0, rot);
         }
     }
 
