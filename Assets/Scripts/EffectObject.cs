@@ -17,6 +17,7 @@ public class EffectObject : MonoBehaviour
     private bool doAnimate;
 
     private float activeDuration;
+    private AnimationCurve scaleCurve;
     private int animateIndex;
     private SpriteRenderer spriteRenderer;
     private LineRenderer lineRenderer;
@@ -49,6 +50,11 @@ public class EffectObject : MonoBehaviour
             if (lineRenderer != null)
                 lineRenderer.enabled = false;
         }
+    }
+
+    public void SetScaleCurve(AnimationCurve curve)
+    {
+        scaleCurve = curve;
     }
 
     void OnEnable()
@@ -100,7 +106,15 @@ public class EffectObject : MonoBehaviour
 
         if (doScale)
         {
-            transform.localScale = Vector3.Lerp(beginScale, endScale, activeDuration / lifeDuration);
+            if (scaleCurve != null)
+            {
+                float scale = scaleCurve.Evaluate(activeDuration / lifeDuration);
+                transform.localScale = new Vector3(scale, scale, 1);
+            }
+            else
+            {
+                transform.localScale = Vector3.Lerp(beginScale, endScale, activeDuration / lifeDuration);
+            }
         }
 
         if (doAnimate && spriteRenderer != null)

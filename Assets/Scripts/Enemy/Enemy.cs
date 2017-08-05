@@ -12,9 +12,9 @@ public enum BreakEffectType
 
 public class Enemy : BattleObject
 {
-    private static Color redBreakEffectColor = new Color(1f, 0.5f, 0.5f, 0.5f);
-    private static Color blueBreakEffectColor = new Color(0.5f, 0.5f, 1f, 0.5f);
-    private static Color greenBreakEffectColor = new Color(0.5f, 1f, 0.5f, 0.5f);
+    static private Color redBreakEffectColor = new Color(1f, 0.5f, 0.5f, 0.5f);
+    static private Color blueBreakEffectColor = new Color(0.5f, 0.5f, 1f, 0.5f);
+    static private Color greenBreakEffectColor = new Color(0.5f, 1f, 0.5f, 0.5f);
 
     public int hp;
     public MovingBorder movingBorder;

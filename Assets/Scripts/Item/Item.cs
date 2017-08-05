@@ -12,17 +12,28 @@ public enum ItemType
 
 public class Item : BattleObject
 {
-    static public float autoFlyRangeSq = 24f * 24f;
-    static public float autoFlyRangeSlowSq = 48f * 48f;
+    static private float dropGravity = 0.05f;
+    static private float initDropSpeed = -3f;
+    static private float maxDropSpeed = 2f;
+    static private float autoFlyRangeSq = 24f * 24f;
+    static private float autoFlyRangeSlowSq = 48f * 48f;
+    static private float itemLineHeight = 96f;
+    static private float itemLineFlySpeed = 10f;
+    static private float rangeFlySpeed = 5f;
+    static private float destroyHeight = -256f;
+
+    static private float hintHeightMin = 240f;
+    static private float hintHeightMax = 320f;
+    static private float hintHeight = 80f;
+    static private AnimationCurve rotationCurve = new AnimationCurve(new Keyframe[] {
+        new Keyframe(0, 0, 0, -1080),
+        new Keyframe(1, -1080, 0, 0),
+    });
 
     public ItemType itemType;
     public Sprite hintSprite;
     public float hintOffset;
-    public float dropGravity;
-    public float initDropSpeed;
-    public float maxDropSpeed;
     public float rotateDuration;
-    public AnimationCurve rotationCurve;
 
     private float autoFlySpeed;
     private float dropSpeed;
@@ -55,15 +66,15 @@ public class Item : BattleObject
         }
         else
         {
-            if (playerPos.y > 96f)
+            if (playerPos.y > itemLineHeight)
             {
-                autoFlySpeed = 10f;
+                autoFlySpeed = itemLineFlySpeed;
                 return;
             }
             float rangeSq = Input.GetAxis("Slow") > 0 ? autoFlyRangeSlowSq : autoFlyRangeSq;
             if (dir.sqrMagnitude < rangeSq)
             {
-                autoFlySpeed = 5f;
+                autoFlySpeed = rangeFlySpeed;
                 return;
             }
 
@@ -75,12 +86,12 @@ public class Item : BattleObject
             }
 
             pos.y -= dropSpeed * Time.timeScale;
-            if (pos.y > -256)
+            if (pos.y > destroyHeight)
                 transform.position = pos;
             else
                 destroy = true;
         }
-        if (pos.y > 240)
+        if (pos.y > hintHeightMin)
         {
             if (itemHint == null)
             {
@@ -89,7 +100,7 @@ public class Item : BattleObject
                 itemHint.sprite = hintSprite;
             }
             itemHint.transform.position = new Vector3(pos.x, hintOffset);
-            itemHint.color = new Color(1, 1, 1, (320f - pos.y) / 80f);
+            itemHint.color = new Color(1, 1, 1, (hintHeightMax - pos.y) / hintHeight);
         }
         else if (itemHint != null)
         {
