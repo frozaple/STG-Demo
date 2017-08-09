@@ -13,6 +13,9 @@ public class PlayerStateManager
     public int playerScore;
     public int maxPoint;
 
+    public bool playerDead;
+    public int activeBomb;
+
     public void InitPlayer()
     {
         Transform stageTrans = BattleStageManager.Instance.transform;
@@ -50,5 +53,10 @@ public class PlayerStateManager
     {
         firePower = Mathf.Clamp(firePower + delta, 100, 400);
         subWeapon.SetTamaNum(firePower / 100);
+    }
+
+    public Transform GetPlayerTrans()
+    {
+        return playerObj.transform;
     }
 }

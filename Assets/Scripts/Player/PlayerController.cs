@@ -11,19 +11,7 @@ public struct MovingBorder
 public class PlayerController : BattleObject
 {
     static private float deathAlphaDelta = 0.05f;
-    static private Vector3 deathScaleDelta = new Vector3(0.05f, 0.05f);
-    static private AnimationCurve deathEffectScaleCurve = new AnimationCurve(new Keyframe[] {
-        new Keyframe(0, 0, 0, 200),
-        new Keyframe(0.25f, 50, 200, 200),
-        new Keyframe(0.75f, 400, 700, 0),
-        new Keyframe(1f, 400, 0, 0),
-    });
-    static private AnimationCurve deathEffectScaleCurveEx = new AnimationCurve(new Keyframe[] {
-        new Keyframe(0, 0, 0, 300),
-        new Keyframe(0.25f, 75, 300, 300),
-        new Keyframe(0.75f, 425, 700, 0),
-        new Keyframe(1f, 425, 0, 0),
-    });
+    static private Vector3 deathScaleDelta = new Vector3(-0.05f, 0.05f);
 
     public float moveSpeed;
     public float slowMoveSpeed;
@@ -38,13 +26,16 @@ public class PlayerController : BattleObject
 
     private float invincibleDuration;
     private bool lastBlink;
+    private float dyingTime;
     private bool death;
     private bool reborn;
 
+    public float dyingDuration;
     public float rebornStartHeight;
     public float rebornEndHeight;
     public float rebornMoveSpeed;
-    public float rebornInvicibleTime;
+    public float rebornInvincibleTime;
+    public float bombInvincibleTime;
 
     new private SpriteRenderer renderer;
     private Animator animator;
@@ -65,7 +56,11 @@ public class PlayerController : BattleObject
 
     void Update()
     {
-        if (death)
+        if (dyingTime > 0)
+        {
+            UpdateDying();
+        }
+        else if (death)
         {
             if (reborn)
                 DoReborn();
@@ -98,6 +93,10 @@ public class PlayerController : BattleObject
             subWeapon.gameObject.SetActive(true);
             subWeapon.transform.position = transform.position;
             reborn = true;
+
+            PlayerStateManager playerMgr = BattleStageManager.Instance.GetPlayerManager();
+            playerMgr.playerLife = Mathf.Max(playerMgr.playerLife - 1, 0);
+            playerMgr.playerSpell = 3;
         }
     }
 
@@ -108,12 +107,27 @@ public class PlayerController : BattleObject
         if (pos.y >= rebornEndHeight)
         {
             pos.y = rebornEndHeight;
-            invincibleDuration = rebornInvicibleTime;
+            invincibleDuration = rebornInvincibleTime;
             death = false;
             reborn = false;
             valid = true;
         }
         transform.position = pos;
+    }
+
+    private void UpdateDying()
+    {
+        dyingTime -= Time.timeScale;
+        if (dyingTime <= 0)
+        {
+            dyingTime = 0;
+            BattleStageManager.Instance.PlayDeathEffect(transform.position);
+            subWeapon.gameObject.SetActive(false);
+            if (slowEffect.activeSelf)
+                slowEffect.SetActive(false);
+            valid = false;
+            death = true;
+        }
     }
 
     private void UpdateInvincible()
@@ -183,38 +197,29 @@ public class PlayerController : BattleObject
                 subWeapon.Shoot();
             }
         }
-    }
-
-    override public void OnCollision(BattleObject target)
-    {
-        if (!death && invincibleDuration <= 0)
+        if (Input.GetAxis("Bomb") > 0)
         {
-            if (target.objectType == BattleObjectType.Enemy || target.objectType == BattleObjectType.EnemyBullet)
+            PlayerStateManager playerMgr = BattleStageManager.Instance.GetPlayerManager();
+            if (playerMgr.playerSpell > 0 && playerMgr.activeBomb == 0)
             {
-                subWeapon.gameObject.SetActive(false);
-                if (slowEffect.activeSelf)
-                    slowEffect.SetActive(false);
-                valid = false;
-                death = true;
-
-                Vector3 playerPos = transform.position;
-                for (int i = 0; i < 2; i++)
-                    SpawnDeathEffect(playerPos + new Vector3(0, i * 64f - 32f), 80f, 0, deathEffectScaleCurve);
-                for (int i = 0; i < 2; i++)
-                    SpawnDeathEffect(playerPos + new Vector3(i * 64f - 32f, 0), 80f, 0, deathEffectScaleCurve);
-                SpawnDeathEffect(playerPos, 80f, 0, deathEffectScaleCurveEx);
-                SpawnDeathEffect(playerPos, 50f, 30f, null);
+                playerMgr.playerSpell--;
+                invincibleDuration = bombInvincibleTime;
+                for (int i = 0; i < 6; ++i)
+                    BattleStageManager.Instance.SpawnObject("Player/Bullet/BombBullet");
             }
         }
     }
 
-    private void SpawnDeathEffect(Vector3 pos, float duration, float delay, AnimationCurve curve)
+    override public void OnCollision(BattleObject target)
     {
-        GameObject deathEff = BattleStageManager.Instance.SpawnObject("Player/PlayerDeathEffect");
-        deathEff.transform.position = pos;
-        EffectObject effObj = deathEff.GetComponent<EffectObject>();
-        effObj.lifeDuration = duration;
-        effObj.SetDelay(delay);
-        effObj.SetScaleCurve(curve);
+        if (!death && invincibleDuration <= 0 && dyingTime <= 0)
+        {
+            if (target.objectType == BattleObjectType.Enemy || target.objectType == BattleObjectType.EnemyBullet)
+            {
+                GameObject deadCircle = BattleStageManager.Instance.SpawnObject("Player/PlayerDeadCircle");
+                deadCircle.transform.position = transform.position;
+                dyingTime = dyingDuration;
+            }
+        }
     }
 }

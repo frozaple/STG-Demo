@@ -60,6 +60,11 @@ public class EnemyBullet : BattleObject
             moveDir = transform.up;
     }
 
+    public void Eliminate()
+    {
+        destroy = true;
+    }
+
     override public void OnCollision(BattleObject target)
     {
         destroy = true;

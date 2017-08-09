@@ -46,7 +46,9 @@ public class BattleObjectManager
 
     public List<BattleObject> GetObjectList(BattleObjectType objType)
     {
-        return objListDict[objType];
+        if (objListDict.ContainsKey(objType))
+            return objListDict[objType];
+        return null;
     }
 
     public void Update()

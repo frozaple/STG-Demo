@@ -4,8 +4,21 @@ using UnityEngine;
 
 public class BattleStageManager : MonoBehaviour
 {
-    private static BattleStageManager instance;
-    public static BattleStageManager Instance {
+    static private AnimationCurve deathEffectScaleCurve = new AnimationCurve(new Keyframe[] {
+        new Keyframe(0, 0, 0, 200),
+        new Keyframe(0.25f, 50, 200, 200),
+        new Keyframe(0.75f, 400, 700, 0),
+        new Keyframe(1f, 400, 0, 0),
+    });
+    static private AnimationCurve deathEffectScaleCurveEx = new AnimationCurve(new Keyframe[] {
+        new Keyframe(0, 0, 0, 300),
+        new Keyframe(0.25f, 75, 300, 300),
+        new Keyframe(0.75f, 425, 700, 0),
+        new Keyframe(1f, 425, 0, 0),
+    });
+
+    static private BattleStageManager instance;
+    static public BattleStageManager Instance {
         protected set {
             if (instance != null)
                 Destroy(instance.gameObject);
@@ -21,6 +34,7 @@ public class BattleStageManager : MonoBehaviour
     private PlayerStateManager playerManager;
 
     private System.Random battleRandom;
+    private CameraShake camShakeEffect;
 
     void Awake()
     {
@@ -43,6 +57,7 @@ public class BattleStageManager : MonoBehaviour
 
         playerManager.InitPlayer();
         battleRandom = new System.Random();
+        camShakeEffect = Camera.main.GetComponent<CameraShake>();
     }
 
     void Update()
@@ -56,6 +71,8 @@ public class BattleStageManager : MonoBehaviour
         scriptManager.Dispose();
     }
 
+    // -------------------------- resource manager --------------------------
+
     public GameObject SpawnObject(string name)
     {
         return resourceManager.Spawn(name);
@@ -68,6 +85,8 @@ public class BattleStageManager : MonoBehaviour
         else
             resourceManager.Despawn(obj);
     }
+
+    // -------------------------- battle manager --------------------------
 
     public BattleObjectManager GetBattleManager()
     {
@@ -89,6 +108,44 @@ public class BattleStageManager : MonoBehaviour
         return spriteManager.GetBulletSprite(shape, color);
     }
 
+    public void RangeEnemyDamage(Vector3 centerPos, float range, int damage)
+    {
+        float rangeSq = range * range;
+        List<BattleObject> enemyList = battleManager.GetObjectList(BattleObjectType.Enemy);
+        if (enemyList == null)
+            return;
+        foreach (BattleObject enemyObj in enemyList)
+        {
+            Vector3 disVec = enemyObj.transform.position - centerPos;
+            if (disVec.sqrMagnitude < rangeSq)
+            {
+                Enemy enemy = enemyObj as Enemy;
+                if (enemy != null)
+                    enemy.hp -= damage;
+            }
+        }
+    }
+
+    public void RangeBulletEliminate(Vector3 centerPos, float range)
+    {
+        float rangeSq = range * range;
+        List<BattleObject> bulletList = battleManager.GetObjectList(BattleObjectType.EnemyBullet);
+        if (bulletList == null)
+            return;
+        foreach (BattleObject bulletObj in bulletList)
+        {
+            Vector3 disVec = bulletObj.transform.position - centerPos;
+            if (disVec.sqrMagnitude < rangeSq)
+            {
+                EnemyBullet bullet = bulletObj as EnemyBullet;
+                if (bullet != null)
+                    bullet.Eliminate();
+            }
+        }
+    }
+
+    // -------------------------- player manager --------------------------
+
     public PlayerStateManager GetPlayerManager()
     {
         return playerManager;
@@ -104,8 +161,37 @@ public class BattleStageManager : MonoBehaviour
         return playerManager.GetPlayerAngle(posX, posY);
     }
 
+    // -------------------------- random --------------------------
+
     public int GetRandom(int min, int max)
     {
         return battleRandom.Next(min, max);
+    }
+
+    // -------------------------- effects --------------------------
+
+    public void PlayDeathEffect(Vector3 pos)
+    {
+        for (int i = 0; i < 2; i++)
+            SpawnDeathEffect(pos + new Vector3(0, i * 64f - 32f), 80f, 0, deathEffectScaleCurve);
+        for (int i = 0; i < 2; i++)
+            SpawnDeathEffect(pos + new Vector3(i * 64f - 32f, 0), 80f, 0, deathEffectScaleCurve);
+        SpawnDeathEffect(pos, 80f, 0, deathEffectScaleCurveEx);
+        SpawnDeathEffect(pos, 50f, 30f, null);
+    }
+
+    private void SpawnDeathEffect(Vector3 pos, float duration, float delay, AnimationCurve curve)
+    {
+        GameObject deathEff = BattleStageManager.Instance.SpawnObject("Player/PlayerDeathEffect");
+        deathEff.transform.position = pos;
+        EffectObject effObj = deathEff.GetComponent<EffectObject>();
+        effObj.lifeDuration = duration;
+        effObj.SetDelay(delay);
+        effObj.SetScaleCurve(curve);
+    }
+
+    public void PlayCameraShake(float duration, float x, float y)
+    {
+        camShakeEffect.DoShake(duration, x, y);
     }
 }
