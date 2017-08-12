@@ -15,13 +15,52 @@ public class BattleObjectTypeComparer : IEqualityComparer<BattleObjectType>
     }
 }
 
+public struct RangeTask {
+    private float passTime;
+    private float startTime;
+    private float endTime;
+    private float rangeSpeed;
+    public Vector3 rangePos;
+    public int enemyDamage;
+
+    public RangeTask(Vector3 pos, float start, float duration, float range, int damage)
+    {
+        rangePos = pos;
+        passTime = 0;
+        startTime = start;
+        endTime = start + duration;
+        rangeSpeed = range;
+        enemyDamage = damage;
+    }
+
+    public float Update()
+    {
+        int oldTimeInt = (int)(passTime);
+        passTime += Time.timeScale;
+        if (passTime >= startTime)
+        {
+            int newTimeInt = (int)(passTime);
+            if (oldTimeInt != newTimeInt)
+                return (newTimeInt - startTime) * rangeSpeed;
+        }
+        return 0;
+    }
+
+    public bool Expired()
+    {
+        return passTime >= endTime;
+    }
+}
+
 public class BattleObjectManager
 {
-    Dictionary<BattleObjectType, List<BattleObject>> objListDict;
+    private Dictionary<BattleObjectType, List<BattleObject>> objListDict;
+    private List<RangeTask> pendingRangeTask;
 
     public void Init()
     {
         objListDict = new Dictionary<BattleObjectType, List<BattleObject>>(new BattleObjectTypeComparer());
+        pendingRangeTask = new List<RangeTask>();
     }
 
     public void AddObject(BattleObject obj)
@@ -53,6 +92,12 @@ public class BattleObjectManager
 
     public void Update()
     {
+        UpdateRangeTask();
+        CollisionCheck();
+    }
+
+    private void CollisionCheck()
+    {
         CheckCollisionPair(BattleObjectType.Player, BattleObjectType.EnemyBullet);
         CheckCollisionPair(BattleObjectType.Player, BattleObjectType.Item);
         CheckCollisionPair(BattleObjectType.Enemy, BattleObjectType.PlayerBullet);
@@ -74,6 +119,67 @@ public class BattleObjectManager
                     }
                 }
             }
+        }
+    }
+
+    public void RangeEnemyDamage(Vector3 centerPos, float range, int damage)
+    {
+        float rangeSq = range * range;
+        List<BattleObject> enemyList = GetObjectList(BattleObjectType.Enemy);
+        if (enemyList == null)
+            return;
+        foreach (BattleObject enemyObj in enemyList)
+        {
+            Vector3 disVec = enemyObj.transform.position - centerPos;
+            if (disVec.sqrMagnitude < rangeSq)
+            {
+                Enemy enemy = enemyObj as Enemy;
+                if (enemy != null)
+                    enemy.hp -= damage;
+            }
+        }
+    }
+
+    public void RangeBulletEliminate(Vector3 centerPos, float range)
+    {
+        float rangeSq = range * range;
+        List<BattleObject> bulletList = GetObjectList(BattleObjectType.EnemyBullet);
+        if (bulletList == null)
+            return;
+        foreach (BattleObject bulletObj in bulletList)
+        {
+            Vector3 disVec = bulletObj.transform.position - centerPos;
+            if (disVec.sqrMagnitude < rangeSq)
+            {
+                EnemyBullet bullet = bulletObj as EnemyBullet;
+                if (bullet != null)
+                    bullet.Eliminate();
+            }
+        }
+    }
+
+    public void AddRangeTask(RangeTask task)
+    {
+        pendingRangeTask.Add(task);
+    }
+
+    private void UpdateRangeTask()
+    {
+        int taskCount = pendingRangeTask.Count;
+        for (int i = taskCount - 1; i >= 0; --i)
+        {
+            RangeTask task = pendingRangeTask[i];
+            float range = task.Update();
+            if (range > 0)
+            {
+                RangeBulletEliminate(task.rangePos, range);
+                if (task.enemyDamage > 0)
+                    RangeEnemyDamage(task.rangePos, range, task.enemyDamage);
+            }
+            if (pendingRangeTask[i].Expired())
+                pendingRangeTask.RemoveAt(i);
+            else
+                pendingRangeTask[i] = task;
         }
     }
 }

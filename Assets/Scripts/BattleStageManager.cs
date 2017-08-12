@@ -110,38 +110,17 @@ public class BattleStageManager : MonoBehaviour
 
     public void RangeEnemyDamage(Vector3 centerPos, float range, int damage)
     {
-        float rangeSq = range * range;
-        List<BattleObject> enemyList = battleManager.GetObjectList(BattleObjectType.Enemy);
-        if (enemyList == null)
-            return;
-        foreach (BattleObject enemyObj in enemyList)
-        {
-            Vector3 disVec = enemyObj.transform.position - centerPos;
-            if (disVec.sqrMagnitude < rangeSq)
-            {
-                Enemy enemy = enemyObj as Enemy;
-                if (enemy != null)
-                    enemy.hp -= damage;
-            }
-        }
+        battleManager.RangeEnemyDamage(centerPos, range, damage);
     }
 
     public void RangeBulletEliminate(Vector3 centerPos, float range)
     {
-        float rangeSq = range * range;
-        List<BattleObject> bulletList = battleManager.GetObjectList(BattleObjectType.EnemyBullet);
-        if (bulletList == null)
-            return;
-        foreach (BattleObject bulletObj in bulletList)
-        {
-            Vector3 disVec = bulletObj.transform.position - centerPos;
-            if (disVec.sqrMagnitude < rangeSq)
-            {
-                EnemyBullet bullet = bulletObj as EnemyBullet;
-                if (bullet != null)
-                    bullet.Eliminate();
-            }
-        }
+        battleManager.RangeBulletEliminate(centerPos, range);
+    }
+
+    public void AddRangeTask(RangeTask task)
+    {
+        battleManager.AddRangeTask(task);
     }
 
     // -------------------------- player manager --------------------------

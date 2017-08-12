@@ -4,11 +4,31 @@ using UnityEngine;
 
 public class EnemyBullet : BattleObject
 {
+    static private Color[] eliminateColors = new Color[] {
+        new Color(0.1f, 0.1f, 0.1f, 0.2f),
+        new Color(0.5f, 0.1f, 0.1f, 0.2f),
+        new Color(1.0f, 0.1f, 0.1f, 0.2f),
+        new Color(0.5f, 0.1f, 0.5f, 0.2f),
+        new Color(1.0f, 0.1f, 1.0f, 0.2f),
+        new Color(0.1f, 0.1f, 0.5f, 0.2f),
+        new Color(0.1f, 0.1f, 1.0f, 0.2f),
+        new Color(0.1f, 0.5f, 0.5f, 0.2f),
+        new Color(0.1f, 1.0f, 1.0f, 0.2f),
+        new Color(0.1f, 0.5f, 0.1f, 0.2f),
+        new Color(0.1f, 1.0f, 0.1f, 0.2f),
+        new Color(0.5f, 1.0f, 0.1f, 0.2f),
+        new Color(0.5f, 0.5f, 0.1f, 0.2f),
+        new Color(1.0f, 1.0f, 0.1f, 0.2f),
+        new Color(1.0f, 0.5f, 0.1f, 0.2f),
+        new Color(1.0f, 1.0f, 1.0f, 0.2f),
+    };
+
     public float speed;
     public MovingBorder movingBorder;
     private bool selfRotate;
     private Vector3 moveDir;
     new private SpriteRenderer renderer;
+    private int eliminateColorIndex;
 
     void Awake()
     {
@@ -44,6 +64,10 @@ public class EnemyBullet : BattleObject
     {
         Sprite sprite = BattleStageManager.Instance.GetBulletSprite(shape, color);
         renderer.sprite = sprite;
+        if (color >= 0 && color < eliminateColors.Length)
+            eliminateColorIndex = color;
+        else
+            eliminateColorIndex = 0;
     }
 
     public void SetSelfRotate(bool rotate)
@@ -62,11 +86,15 @@ public class EnemyBullet : BattleObject
 
     public void Eliminate()
     {
+        GameObject eliminateEff = BattleStageManager.Instance.SpawnObject("Enemy/Bullet/BulletEliminateEffect");
+        eliminateEff.transform.position = transform.position;
+        eliminateEff.transform.eulerAngles = new Vector3(0, 0, Random.Range(0, 180));
+        eliminateEff.GetComponent<SpriteRenderer>().color = eliminateColors[eliminateColorIndex];
         destroy = true;
     }
 
     override public void OnCollision(BattleObject target)
     {
-        destroy = true;
+        Eliminate();
     }
 }

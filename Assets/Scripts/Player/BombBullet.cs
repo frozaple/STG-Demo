@@ -195,9 +195,15 @@ public class BombBullet : MonoBehaviour
 
     void OnDrawGizmos()
     {
-        Gizmos.color = Color.green;
-        Gizmos.DrawWireSphere(subSetTrans.position, collisionRadius);
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(subSetTrans.position, explosionRadius);
+        if (activateTime > strikeBeginTime + strikeDuration)
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawWireSphere(subSetTrans.position, explosionRadius);
+        }
+        else
+        {
+            Gizmos.color = Color.green;
+            Gizmos.DrawWireSphere(subSetTrans.position, collisionRadius);
+        }
     }
 }

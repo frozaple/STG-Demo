@@ -37,6 +37,11 @@ public class PlayerController : BattleObject
     public float rebornInvincibleTime;
     public float bombInvincibleTime;
 
+    public float deathEliminateDuration;
+    public float deathEliminateRadiusSpeed;
+    public float deathEliminateDelay;
+    public int deathEliminateDamage;
+
     new private SpriteRenderer renderer;
     private Animator animator;
     private int speedParamID;
@@ -87,6 +92,8 @@ public class PlayerController : BattleObject
         }
         else
         {
+            RangeTask newTask = new RangeTask(transform.position, deathEliminateDelay, deathEliminateDuration, deathEliminateRadiusSpeed, deathEliminateDamage);
+            BattleStageManager.Instance.AddRangeTask(newTask);
             transform.position = new Vector3(0, rebornStartHeight);
             transform.localScale = Vector3.one;
             renderer.color = Color.white;
