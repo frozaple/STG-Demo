@@ -122,6 +122,7 @@ public class Item : BattleObject
         {
             case ItemType.PowerItem:
                 playerManager.ChangeFirePower(1);
+                playerManager.ChangeHyperPower(5);
                 playerManager.playerScore += 100;
                 break;
             case ItemType.ScoreItem:

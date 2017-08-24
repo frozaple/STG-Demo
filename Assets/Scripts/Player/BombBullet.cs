@@ -154,7 +154,7 @@ public class BombBullet : MonoBehaviour
         subSetTrans.position = Vector3.Lerp(strikeBeginPos, strikeEndPos, strikeLerp);
         if (activateTime > strikeBeginTime + strikeDuration)
         {
-            BattleStageManager.Instance.PlayCameraShake(30f, 8f, 8f);
+            BattleStageManager.Instance.PlayCameraShake(30f, 0.1f, 0.1f);
             BattleStageManager.Instance.RangeEnemyDamage(subSetTrans.position, explosionRadius, explosionDamage);
             BattleStageManager.Instance.RangeBulletEliminate(subSetTrans.position, explosionRadius);
         }

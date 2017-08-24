@@ -10,10 +10,12 @@ public class PlayerStateManager
     public int playerLife;
     public int playerSpell;
     public int firePower;
+    public int hyperPower;
     public int playerScore;
     public int maxPoint;
 
     public bool playerDead;
+    public float activeHyper;
     public int activeBomb;
 
     public void InitPlayer()
@@ -32,6 +34,7 @@ public class PlayerStateManager
         playerSpell = 3;
         firePower = 100;
         subWeapon.SetTamaNum(1);
+        hyperPower = 0;
 
         playerScore = 0;
         maxPoint = 10000;
@@ -55,8 +58,34 @@ public class PlayerStateManager
         subWeapon.SetTamaNum(firePower / 100);
     }
 
+    public void ChangeHyperPower(int delta)
+    {
+        if (activeHyper <= 0)
+            hyperPower = Mathf.Clamp(hyperPower + delta, 0, 1000);
+    }
+
     public Transform GetPlayerTrans()
     {
         return playerObj.transform;
+    }
+
+    public void Update()
+    {
+        if (activeHyper > 0)
+        {
+            activeHyper -= Time.timeScale;
+            if (activeHyper <= 0)
+                hyperPower = 0;
+        }
+    }
+
+    public void SetPlayerDead(bool dead)
+    {
+        playerDead = dead;
+        if (dead && activeHyper > 0)
+        {
+            activeHyper = 0;
+            hyperPower = 0;
+        }
     }
 }

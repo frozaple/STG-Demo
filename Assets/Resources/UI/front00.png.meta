@@ -1,6 +1,6 @@
 fileFormatVersion: 2
 guid: 485d26e194460d540a954a912b4543ab
-timeCreated: 1500723888
+timeCreated: 1502731351
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
@@ -19,6 +19,15 @@ TextureImporter:
     21300024: spell_piece_3
     21300026: spell_piece_1
     21300028: title_power
+    21300030: title_hyper
+    21300032: hyper_rune0
+    21300034: hyper_rune1
+    21300036: hyper_rune2
+    21300038: hyper_rune3
+    21300040: hyper_rune4
+    21300042: hyper_rune5
+    21300044: hyper_rune6
+    21300046: hyper_rune7
   serializedVersion: 4
   mipmaps:
     mipMapMode: 0
@@ -276,6 +285,123 @@ TextureImporter:
         height: 32
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: title_hyper
+      rect:
+        serializedVersion: 2
+        x: 733
+        y: 531
+        width: 80
+        height: 80
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: hyper_rune0
+      rect:
+        serializedVersion: 2
+        x: 811
+        y: 575
+        width: 28
+        height: 28
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: hyper_rune1
+      rect:
+        serializedVersion: 2
+        x: 841
+        y: 575
+        width: 28
+        height: 28
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: hyper_rune2
+      rect:
+        serializedVersion: 2
+        x: 872
+        y: 575
+        width: 28
+        height: 28
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: hyper_rune3
+      rect:
+        serializedVersion: 2
+        x: 902
+        y: 575
+        width: 28
+        height: 28
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: hyper_rune4
+      rect:
+        serializedVersion: 2
+        x: 811
+        y: 537
+        width: 28
+        height: 28
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: hyper_rune5
+      rect:
+        serializedVersion: 2
+        x: 842
+        y: 537
+        width: 28
+        height: 28
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: hyper_rune6
+      rect:
+        serializedVersion: 2
+        x: 872
+        y: 537
+        width: 28
+        height: 28
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: hyper_rune7
+      rect:
+        serializedVersion: 2
+        x: 902
+        y: 537
+        width: 28
+        height: 28
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       tessellationDetail: 0

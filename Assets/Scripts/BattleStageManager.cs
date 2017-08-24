@@ -34,7 +34,8 @@ public class BattleStageManager : MonoBehaviour
     private PlayerStateManager playerManager;
 
     private System.Random battleRandom;
-    private CameraShake camShakeEffect;
+    public CameraShake camShakeEffect;
+    public BackgroundEffect backgroundEffect;
 
     void Awake()
     {
@@ -57,13 +58,13 @@ public class BattleStageManager : MonoBehaviour
 
         playerManager.InitPlayer();
         battleRandom = new System.Random();
-        camShakeEffect = Camera.main.GetComponent<CameraShake>();
     }
 
     void Update()
     {
         battleManager.Update();
         scriptManager.Update();
+        playerManager.Update();
     }
 
     void OnDestroy()
@@ -172,5 +173,10 @@ public class BattleStageManager : MonoBehaviour
     public void PlayCameraShake(float duration, float x, float y)
     {
         camShakeEffect.DoShake(duration, x, y);
+    }
+
+    public void AddWaveEffect(Vector2 center, float spd, float duration, float width, float offset)
+    {
+        backgroundEffect.AddWaveEffect(center, spd, duration, width, offset);
     }
 }

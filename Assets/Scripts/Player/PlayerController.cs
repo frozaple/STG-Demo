@@ -22,12 +22,12 @@ public class PlayerController : BattleObject
     
     public Transform[] mainFirePos;
     public float shootGap;
+    public float hyperShootGap;
     private float shootAccumulation;
 
     private float invincibleDuration;
     private bool lastBlink;
     private float dyingTime;
-    private bool death;
     private bool reborn;
 
     public float dyingDuration;
@@ -42,17 +42,22 @@ public class PlayerController : BattleObject
     public float deathEliminateDelay;
     public int deathEliminateDamage;
 
+    private PlayerStateManager playerMgr;
+    private float hyperActiveTime;
+    private float hyperEffectScale;
+
     new private SpriteRenderer renderer;
     private Animator animator;
     private int speedParamID;
     private int slowEffParamID;
     public GameObject slowEffect;
+    public GameObject hyperEffect;
 
     void Awake()
     {
         shootAccumulation = 0;
-        death = false;
         reborn = false;
+        playerMgr = BattleStageManager.Instance.GetPlayerManager();
         renderer = GetComponent<SpriteRenderer>();
         animator = GetComponent<Animator>();
         speedParamID = Animator.StringToHash("Horizontal Speed");
@@ -61,11 +66,7 @@ public class PlayerController : BattleObject
 
     void Update()
     {
-        if (dyingTime > 0)
-        {
-            UpdateDying();
-        }
-        else if (death)
+        if (playerMgr.playerDead)
         {
             if (reborn)
                 DoReborn();
@@ -74,11 +75,21 @@ public class PlayerController : BattleObject
         }
         else
         {
-            if (invincibleDuration > 0)
-                UpdateInvincible();
-            PlayerMove();
-            PlayerShoot();
+            PlayerBomb();
+            if (dyingTime > 0)
+            {
+                UpdateDying();
+            }
+            else
+            {
+                if (invincibleDuration > 0)
+                    UpdateInvincible();
+                PlayerMove();
+                PlayerShoot();
+            }
         }
+        if (hyperEffect.activeSelf)
+            UpdateHyperEffect();
     }
 
     private void DoDeath()
@@ -100,8 +111,7 @@ public class PlayerController : BattleObject
             subWeapon.gameObject.SetActive(true);
             subWeapon.transform.position = transform.position;
             reborn = true;
-
-            PlayerStateManager playerMgr = BattleStageManager.Instance.GetPlayerManager();
+            
             playerMgr.playerLife = Mathf.Max(playerMgr.playerLife - 1, 0);
             playerMgr.playerSpell = 3;
         }
@@ -115,7 +125,7 @@ public class PlayerController : BattleObject
         {
             pos.y = rebornEndHeight;
             invincibleDuration = rebornInvincibleTime;
-            death = false;
+            playerMgr.SetPlayerDead(false);
             reborn = false;
             valid = true;
         }
@@ -133,7 +143,7 @@ public class PlayerController : BattleObject
             if (slowEffect.activeSelf)
                 slowEffect.SetActive(false);
             valid = false;
-            death = true;
+            playerMgr.SetPlayerDead(true);
         }
     }
 
@@ -153,6 +163,27 @@ public class PlayerController : BattleObject
         {
             renderer.color = Color.white;
             invincibleDuration = 0;
+        }
+    }
+
+    private void UpdateHyperEffect()
+    {
+        if (playerMgr.activeHyper > 0)
+        {
+            float scale = playerMgr.activeHyper / hyperActiveTime;
+            float rotateSpd = -6f;
+            if (hyperEffectScale < 1)
+            {
+                rotateSpd = -12f;
+                hyperEffectScale = Mathf.Min(hyperEffectScale + 0.02f * Time.timeScale, 1);
+                scale *= hyperEffectScale;
+            }
+            hyperEffect.transform.localScale = new Vector3(scale, scale, 1);
+            hyperEffect.transform.Rotate(0, 0, rotateSpd * Time.timeScale);
+        }
+        else
+        {
+            hyperEffect.SetActive(false);
         }
     }
 
@@ -193,9 +224,10 @@ public class PlayerController : BattleObject
         if (Input.GetAxis("Fire") > 0)
         {
             shootAccumulation += Time.timeScale;
-            while(shootAccumulation >= shootGap)
+            float gap = playerMgr.activeHyper > 0 ? hyperShootGap : shootGap;
+            while(shootAccumulation >= gap)
             {
-                shootAccumulation -= shootGap;
+                shootAccumulation -= gap;
                 for (int i = 0;i < mainFirePos.Length; i++)
                 {
                     GameObject fireBullet = BattleStageManager.Instance.SpawnObject("Player/Bullet/MainBullet");
@@ -204,12 +236,29 @@ public class PlayerController : BattleObject
                 subWeapon.Shoot();
             }
         }
+        if (Input.GetAxis("Hyper") > 0)
+        {
+            if (playerMgr.hyperPower >= 625 && playerMgr.activeHyper <= 0)
+            {
+                hyperActiveTime = playerMgr.hyperPower * 12 / 10;
+                playerMgr.activeHyper = hyperActiveTime;
+                BattleStageManager.Instance.AddRangeTask(new RangeTask(transform.position, 0, 45f, 20f, 0));
+                BattleStageManager.Instance.AddWaveEffect(transform.position, 20f, 45f, 30f, 8f);
+                hyperEffect.SetActive(true);
+                hyperEffectScale = 0;
+                hyperEffect.transform.localScale = Vector3.zero;
+            }
+        }
+    }
+
+    private void PlayerBomb()
+    {
         if (Input.GetAxis("Bomb") > 0)
         {
-            PlayerStateManager playerMgr = BattleStageManager.Instance.GetPlayerManager();
             if (playerMgr.playerSpell > 0 && playerMgr.activeBomb == 0)
             {
                 playerMgr.playerSpell--;
+                dyingTime = 0;
                 invincibleDuration = bombInvincibleTime;
                 for (int i = 0; i < 6; ++i)
                     BattleStageManager.Instance.SpawnObject("Player/Bullet/BombBullet");
@@ -219,7 +268,7 @@ public class PlayerController : BattleObject
 
     override public void OnCollision(BattleObject target)
     {
-        if (!death && invincibleDuration <= 0 && dyingTime <= 0)
+        if (!playerMgr.playerDead && invincibleDuration <= 0 && dyingTime <= 0)
         {
             if (target.objectType == BattleObjectType.Enemy || target.objectType == BattleObjectType.EnemyBullet)
             {

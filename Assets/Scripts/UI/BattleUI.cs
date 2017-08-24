@@ -7,6 +7,7 @@ public class BattleUI : MonoBehaviour {
     public GameObject spellUI;
     public GameObject scoreUI;
     public GameObject maxPointUI;
+    public GameObject hyperUI;
 
     public SpriteRenderer[] imgPowerNum;
     public Sprite[] UINumSprite;
@@ -16,11 +17,17 @@ public class BattleUI : MonoBehaviour {
     private SpriteRenderer[] imgScoreDot;
     private SpriteRenderer[] imgScoreNum;
     private SpriteRenderer[] imgMaxPointNum;
+    private SpriteRenderer imgHyper;
+    private SpriteRenderer[] imgHyperRune;
 
     private int lastLife;
     private int lastSpell;
     private int lastPower;
     private int lastMaxPoint;
+
+    private int lastHyper;
+    private bool[] doHyperRuneLerp;
+    private float hyperRotateSpd;
 
     private const int scoreIntervalLength = 20;
     private int lastScore;
@@ -36,8 +43,12 @@ public class BattleUI : MonoBehaviour {
         imgScoreDot = scoreUI.transform.FindChild("Dot").GetComponentsInChildren<SpriteRenderer>();
         imgScoreNum = scoreUI.transform.FindChild("Num").GetComponentsInChildren<SpriteRenderer>();
         imgMaxPointNum = maxPointUI.GetComponentsInChildren<SpriteRenderer>();
+        imgHyper = hyperUI.transform.FindChild("ImgHyper").GetComponent<SpriteRenderer>();
+        imgHyperRune = hyperUI.transform.FindChild("Runes").GetComponentsInChildren<SpriteRenderer>();
 
         lastScore = -1;
+        lastHyper = -1;
+        doHyperRuneLerp = new bool[imgHyperRune.Length];
 
         playerManager = BattleStageManager.Instance.GetPlayerManager();
     }
@@ -47,6 +58,7 @@ public class BattleUI : MonoBehaviour {
         UpdateLife();
         UpdateSpell();
         UpdatePower();
+        UpdateHyper();
         UpdateScore();
         UpdateMaxPoint();
     }
@@ -57,7 +69,7 @@ public class BattleUI : MonoBehaviour {
         {
             lastLife = playerManager.playerLife;
             for (int i = imgLife.Length - 1; i >= 0; i--)
-                imgLife[i].gameObject.SetActive(i < lastLife);
+                imgLife[i].enabled = i < lastLife;
         }
     }
 
@@ -67,7 +79,7 @@ public class BattleUI : MonoBehaviour {
         {
             lastSpell = playerManager.playerSpell;
             for (int i = imgSpell.Length - 1; i >= 0; i--)
-                imgSpell[i].gameObject.SetActive(i < lastSpell);
+                imgSpell[i].enabled = i < lastSpell;
         }
     }
 
@@ -81,6 +93,51 @@ public class BattleUI : MonoBehaviour {
             {
                 imgPowerNum[i].sprite = UINumSprite[power % 10];
                 power /= 10;
+            }
+        }
+    }
+
+    private void UpdateHyper()
+    {
+        int hyperLevel = playerManager.hyperPower / 125;
+        if (lastHyper != hyperLevel)
+        {
+            lastHyper = hyperLevel;
+            for (int i = doHyperRuneLerp.Length - 1; i >= 0; i--)
+                doHyperRuneLerp[i] = true;
+        }
+
+        if (playerManager.activeHyper > 0)
+            hyperRotateSpd = 16f;
+        else if (hyperRotateSpd < lastHyper)
+            hyperRotateSpd = lastHyper;
+        else if (hyperRotateSpd > lastHyper)
+            hyperRotateSpd -= 0.2f;
+        if (hyperRotateSpd > 0)
+            imgHyper.transform.Rotate(0, 0, -hyperRotateSpd);
+
+        for (int i = imgHyperRune.Length - 1; i >= 0; i--)
+        {
+            if (doHyperRuneLerp[i])
+            {
+                float alpha = imgHyperRune[i].color.a;
+                if (i < lastHyper)
+                {
+                    if (alpha < 1)
+                        alpha += 0.05f;
+                    else
+                        doHyperRuneLerp[i] = false;
+                }
+                else
+                {
+                    if (alpha > 0)
+                        alpha -= 0.05f;
+                    else
+                        doHyperRuneLerp[i] = false;
+                }
+                float scale = (2 - Mathf.Clamp(alpha, 0, 1)) * 0.4f;
+                imgHyperRune[i].transform.localScale = new Vector3(scale, scale, 1);
+                imgHyperRune[i].color = new Color(1, 1, 1, alpha);
             }
         }
     }
@@ -111,7 +168,7 @@ public class BattleUI : MonoBehaviour {
             int digit = 0;
             for (int i = 0; i < imgScoreNum.Length; i++)
             {
-                imgScoreNum[i].gameObject.SetActive(score > 0 || i == 0);
+                imgScoreNum[i].enabled = score > 0 || i == 0;
                 if (score > 0)
                 {
                     imgScoreNum[i].sprite = UINumSprite[score % 10];
@@ -120,7 +177,7 @@ public class BattleUI : MonoBehaviour {
                 }
             }
             for (int i = imgScoreDot.Length - 1; i >= 0; i--)
-                imgScoreDot[i].gameObject.SetActive(i < (digit - 1) / 3);
+                imgScoreDot[i].enabled = i < (digit - 1) / 3;
         }
     }
 
@@ -132,7 +189,7 @@ public class BattleUI : MonoBehaviour {
             int point = lastMaxPoint;
             for (int i = 0; i < imgMaxPointNum.Length; i++)
             {
-                imgMaxPointNum[i].gameObject.SetActive(point > 0 || i == 0);
+                imgMaxPointNum[i].enabled = point > 0 || i == 0;
                 if (point > 0)
                 {
                     imgMaxPointNum[i].sprite = UINumSprite[point % 10];
