@@ -4,10 +4,11 @@ using UnityEngine;
 
 public enum ItemType
 {
-    PowerItem = 1,
-    ScoreItem = 2,
-    LifeItem = 3,
-    SpellItem = 4,
+    PowerItem,
+    ScoreItem,
+    MaxPointItem,
+    LifeItem,
+    SpellItem,
 }
 
 public class Item : BattleObject
@@ -18,7 +19,7 @@ public class Item : BattleObject
     static private float autoFlyRangeSq = 24f * 24f;
     static private float autoFlyRangeSlowSq = 48f * 48f;
     static private float itemLineHeight = 96f;
-    static private float itemLineFlySpeed = 10f;
+    static private float itemLineFlySpeed = 15f;
     static private float rangeFlySpeed = 5f;
     static private float destroyHeight = -256f;
 
@@ -31,10 +32,12 @@ public class Item : BattleObject
     });
 
     public ItemType itemType;
+    public bool autoFly;
     public Sprite hintSprite;
     public float hintOffset;
     public float rotateDuration;
 
+    private float offsetSpeed;
     private float autoFlySpeed;
     private float dropSpeed;
     private SpriteRenderer itemHint;
@@ -44,17 +47,20 @@ public class Item : BattleObject
     {
         base.OnEnable();
         dropSpeed = initDropSpeed;
-        autoFlySpeed = 0;
+        autoFlySpeed = autoFly ? itemLineFlySpeed : 0;
+        if (autoFly)
+            offsetSpeed = BattleStageManager.Instance.GetRandom(-10, 10) / 20f;
         rotateTime = 0;
         transform.eulerAngles = Vector3.zero;
     }
 
     void Update()
     {
+        PlayerStateManager playerManager = BattleStageManager.Instance.GetPlayerManager();
         Vector3 playerPos = BattleStageManager.Instance.GetPlayerPos();
         Vector3 pos = transform.position;
         Vector3 dir = playerPos - pos;
-        if (autoFlySpeed > 0)
+        if (autoFlySpeed > 0 && (!autoFly || dropSpeed >= 0))
         {
             float dis = dir.magnitude;
             if (dis > 0)
@@ -63,19 +69,27 @@ public class Item : BattleObject
                 pos += dir / dis * flyDis * Time.timeScale;
                 transform.position = pos;
             }
+            if (playerManager.playerDead)
+            {
+                autoFlySpeed = 0;
+                dropSpeed = maxDropSpeed;
+            }
         }
         else
         {
-            if (playerPos.y > itemLineHeight)
+            if (autoFlySpeed == 0 && !playerManager.playerDead)
             {
-                autoFlySpeed = itemLineFlySpeed;
-                return;
-            }
-            float rangeSq = Input.GetAxis("Slow") > 0 ? autoFlyRangeSlowSq : autoFlyRangeSq;
-            if (dir.sqrMagnitude < rangeSq)
-            {
-                autoFlySpeed = rangeFlySpeed;
-                return;
+                if (playerPos.y > itemLineHeight)
+                {
+                    autoFlySpeed = itemLineFlySpeed;
+                    return;
+                }
+                float rangeSq = Input.GetAxis("Slow") > 0 ? autoFlyRangeSlowSq : autoFlyRangeSq;
+                if (dir.sqrMagnitude < rangeSq)
+                {
+                    autoFlySpeed = rangeFlySpeed;
+                    return;
+                }
             }
 
             if (dropSpeed < maxDropSpeed)
@@ -86,12 +100,14 @@ public class Item : BattleObject
             }
 
             pos.y -= dropSpeed * Time.timeScale;
+            if (autoFly)
+                pos.x += offsetSpeed * Time.timeScale;
             if (pos.y > destroyHeight)
                 transform.position = pos;
             else
                 destroy = true;
         }
-        if (pos.y > hintHeightMin)
+        if (hintSprite != null && pos.y > hintHeightMin)
         {
             if (itemHint == null)
             {
@@ -121,12 +137,19 @@ public class Item : BattleObject
         switch (itemType)
         {
             case ItemType.PowerItem:
-                playerManager.ChangeFirePower(1);
-                playerManager.ChangeHyperPower(5);
-                playerManager.playerScore += 100;
+                bool hyperBonus = false;
+                if (playerManager.ChangeFirePower(1))
+                    playerManager.playerScore += 100;
+                else
+                    hyperBonus = playerManager.AddScore(playerManager.maxPoint / 10, autoFlySpeed == itemLineFlySpeed);
+                playerManager.ChangeHyperPower(hyperBonus ? 10 : 5);
                 break;
             case ItemType.ScoreItem:
-                playerManager.playerScore += playerManager.maxPoint;
+                playerManager.AddScore(playerManager.maxPoint, autoFlySpeed == itemLineFlySpeed);
+                break;
+            case ItemType.MaxPointItem:
+                playerManager.playerScore += 100;
+                playerManager.maxPoint += 10;
                 break;
             case ItemType.LifeItem:
                 playerManager.playerLife++;

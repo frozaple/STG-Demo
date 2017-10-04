@@ -103,7 +103,7 @@ public class PlayerController : BattleObject
         }
         else
         {
-            RangeTask newTask = new RangeTask(transform.position, deathEliminateDelay, deathEliminateDuration, deathEliminateRadiusSpeed, deathEliminateDamage);
+            RangeTask newTask = new RangeTask(transform.position, deathEliminateDelay, deathEliminateDuration, deathEliminateRadiusSpeed, false, deathEliminateDamage);
             BattleStageManager.Instance.AddRangeTask(newTask);
             transform.position = new Vector3(0, rebornStartHeight);
             transform.localScale = Vector3.one;
@@ -242,7 +242,7 @@ public class PlayerController : BattleObject
             {
                 hyperActiveTime = playerMgr.hyperPower * 12 / 10;
                 playerMgr.activeHyper = hyperActiveTime;
-                BattleStageManager.Instance.AddRangeTask(new RangeTask(transform.position, 0, 45f, 20f, 0));
+                BattleStageManager.Instance.AddRangeTask(new RangeTask(transform.position, 0, 45f, 20f, true, 0));
                 BattleStageManager.Instance.AddWaveEffect(transform.position, 20f, 45f, 30f, 8f);
                 hyperEffect.SetActive(true);
                 hyperEffectScale = 0;

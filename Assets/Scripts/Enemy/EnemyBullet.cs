@@ -86,6 +86,8 @@ public class EnemyBullet : BattleObject
 
     public void Eliminate()
     {
+        if (destroy)
+            return;
         GameObject eliminateEff = BattleStageManager.Instance.SpawnObject("Enemy/Bullet/BulletEliminateEffect");
         eliminateEff.transform.position = transform.position;
         eliminateEff.transform.eulerAngles = new Vector3(0, 0, Random.Range(0, 180));

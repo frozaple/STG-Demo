@@ -156,7 +156,7 @@ public class BombBullet : MonoBehaviour
         {
             BattleStageManager.Instance.PlayCameraShake(30f, 0.1f, 0.1f);
             BattleStageManager.Instance.RangeEnemyDamage(subSetTrans.position, explosionRadius, explosionDamage);
-            BattleStageManager.Instance.RangeBulletEliminate(subSetTrans.position, explosionRadius);
+            BattleStageManager.Instance.RangeBulletEliminate(subSetTrans.position, explosionRadius, false);
         }
     }
 
@@ -190,7 +190,7 @@ public class BombBullet : MonoBehaviour
     private void DoCollisionDamage()
     {
         BattleStageManager.Instance.RangeEnemyDamage(subSetTrans.position, collisionRadius, collisionDamage);
-        BattleStageManager.Instance.RangeBulletEliminate(subSetTrans.position, collisionRadius);
+        BattleStageManager.Instance.RangeBulletEliminate(subSetTrans.position, collisionRadius, false);
     }
 
     void OnDrawGizmos()

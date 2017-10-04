@@ -1,6 +1,6 @@
 fileFormatVersion: 2
 guid: 7ad7f275a085989408b2bda77a5a92d6
-timeCreated: 1500999132
+timeCreated: 1507040809
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
@@ -12,6 +12,7 @@ TextureImporter:
     21300010: spell_item
     21300012: life_hint
     21300014: spell_hint
+    21300016: point_item
   serializedVersion: 4
   mipmaps:
     mipMapMode: 0
@@ -176,6 +177,19 @@ TextureImporter:
         y: 0
         width: 32
         height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: point_item
+      rect:
+        serializedVersion: 2
+        x: 208
+        y: 17
+        width: 16
+        height: 15
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}

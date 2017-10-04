@@ -8,9 +8,12 @@ public class BattleUI : MonoBehaviour {
     public GameObject scoreUI;
     public GameObject maxPointUI;
     public GameObject hyperUI;
+    public GameObject scoreDeltaUI;
 
     public SpriteRenderer[] imgPowerNum;
     public Sprite[] UINumSprite;
+    public Sprite[] scoreNumSprite;
+    public GameObject scoreDeltaObj;
 
     private SpriteRenderer[] imgLife;
     private SpriteRenderer[] imgSpell;
@@ -29,10 +32,12 @@ public class BattleUI : MonoBehaviour {
     private bool[] doHyperRuneLerp;
     private float hyperRotateSpd;
 
+    private const int scoreDeltaMaxNum = 20;
     private const int scoreIntervalLength = 20;
     private int lastScore;
     private int targetScore;
     private int scoreInterval;
+    private ScoreDeltaUI[] comScoreDelta;
 
     private PlayerStateManager playerManager;
 
@@ -49,6 +54,7 @@ public class BattleUI : MonoBehaviour {
         lastScore = -1;
         lastHyper = -1;
         doHyperRuneLerp = new bool[imgHyperRune.Length];
+        comScoreDelta = new ScoreDeltaUI[scoreDeltaMaxNum];
 
         playerManager = BattleStageManager.Instance.GetPlayerManager();
     }
@@ -60,6 +66,7 @@ public class BattleUI : MonoBehaviour {
         UpdatePower();
         UpdateHyper();
         UpdateScore();
+        UpdateScoreDelta();
         UpdateMaxPoint();
     }
 
@@ -179,6 +186,47 @@ public class BattleUI : MonoBehaviour {
             for (int i = imgScoreDot.Length - 1; i >= 0; i--)
                 imgScoreDot[i].enabled = i < (digit - 1) / 3;
         }
+    }
+
+    private void UpdateScoreDelta()
+    {
+        int remainCount = playerManager.scoreDeltaList.Count;
+        foreach (ScoreDeltaInfo info in playerManager.scoreDeltaList)
+        {
+            remainCount--;
+            if (remainCount < scoreDeltaMaxNum)
+            {
+                int index = 0;
+                float maxActiveTime = 0;
+                for (int i = 0; i < scoreDeltaMaxNum; ++i)
+                {
+                    ScoreDeltaUI com = comScoreDelta[i];
+                    if (com == null)
+                    {
+                        GameObject deltaObj = Instantiate(scoreDeltaObj);
+                        deltaObj.transform.parent = scoreDeltaUI.transform;
+                        comScoreDelta[i] = deltaObj.GetComponent<ScoreDeltaUI>();
+                        index = i;
+                        break;
+                    }
+                    else if (!com.gameObject.activeSelf)
+                    {
+                        index = i;
+                        break;
+                    }
+                    else if (com.activeTime > maxActiveTime)
+                    {
+                        maxActiveTime = com.activeTime;
+                        index = i;
+                    }
+                }
+                ScoreDeltaUI tarCom = comScoreDelta[index];
+                tarCom.gameObject.SetActive(true);
+                tarCom.SetScore(info.delta, info.full, scoreNumSprite);
+                tarCom.transform.position = playerManager.GetPlayerTrans().position;
+            }
+        }
+        playerManager.scoreDeltaList.Clear();
     }
 
     private void UpdateMaxPoint()

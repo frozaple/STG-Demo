@@ -17,7 +17,7 @@
 			CGPROGRAM
 			#pragma vertex vert
 			#pragma fragment frag
-            #pragma shader_feature WAVE_EFFECT
+            #pragma multi_compile __ WAVE_EFFECT
 			
 			#include "UnityCG.cginc"
 
@@ -43,7 +43,7 @@
                 float2 vec = v.vertex.xy - _WaveVector.xy;
                 float dis = max(length(vec), 0.01);
                 float off = sin(clamp(1 - (dis - _WaveRadius) / _WaveVector.z, 0, 1) * 3.14) * _WaveVector.w;
-                v.vertex.xy = vec * (1 + off / dis) + _WaveVector.xy;
+                v.vertex.xy += vec * off / dis;
                 #endif
 				o.vertex = mul(UNITY_MATRIX_MVP, v.vertex);
 				o.uv = v.uv;

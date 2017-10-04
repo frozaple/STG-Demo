@@ -21,15 +21,17 @@ public struct RangeTask {
     private float endTime;
     private float rangeSpeed;
     public Vector3 rangePos;
+    public bool getPoint;
     public int enemyDamage;
 
-    public RangeTask(Vector3 pos, float start, float duration, float range, int damage)
+    public RangeTask(Vector3 pos, float start, float duration, float range, bool point, int damage)
     {
         rangePos = pos;
         passTime = 0;
         startTime = start;
         endTime = start + duration;
         rangeSpeed = range;
+        getPoint = point;
         enemyDamage = damage;
     }
 
@@ -140,7 +142,7 @@ public class BattleObjectManager
         }
     }
 
-    public void RangeBulletEliminate(Vector3 centerPos, float range)
+    public void RangeBulletEliminate(Vector3 centerPos, float range, bool getPoint)
     {
         float rangeSq = range * range;
         List<BattleObject> bulletList = GetObjectList(BattleObjectType.EnemyBullet);
@@ -153,7 +155,14 @@ public class BattleObjectManager
             {
                 EnemyBullet bullet = bulletObj as EnemyBullet;
                 if (bullet != null)
+                {
                     bullet.Eliminate();
+                    if (getPoint)
+                    {
+                        GameObject pointItem = BattleStageManager.Instance.SpawnObject("Item/PointItem");
+                        pointItem.transform.position = bullet.transform.position;
+                    }
+                }
             }
         }
     }
@@ -172,7 +181,7 @@ public class BattleObjectManager
             float range = task.Update();
             if (range > 0)
             {
-                RangeBulletEliminate(task.rangePos, range);
+                RangeBulletEliminate(task.rangePos, range, task.getPoint);
                 if (task.enemyDamage > 0)
                     RangeEnemyDamage(task.rangePos, range, task.enemyDamage);
             }

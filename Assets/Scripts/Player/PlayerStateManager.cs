@@ -2,8 +2,23 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public struct ScoreDeltaInfo
+{
+    public int delta;
+    public bool full;
+
+    public ScoreDeltaInfo(int delta, bool full)
+    {
+        this.delta = delta;
+        this.full = full;
+    }
+}
+
 public class PlayerStateManager
 {
+    static private float fullScoreHeight = 80f;
+    static private float scoreHeightScale = 320f;
+
     private GameObject playerObj;
     private SubWeapon subWeapon;
 
@@ -13,6 +28,8 @@ public class PlayerStateManager
     public int hyperPower;
     public int playerScore;
     public int maxPoint;
+
+    public List<ScoreDeltaInfo> scoreDeltaList;
 
     public bool playerDead;
     public float activeHyper;
@@ -38,6 +55,8 @@ public class PlayerStateManager
 
         playerScore = 0;
         maxPoint = 10000;
+
+        scoreDeltaList = new List<ScoreDeltaInfo>();
     }
 
     public Vector3 GetPlayerPos()
@@ -52,10 +71,12 @@ public class PlayerStateManager
         return disVec.x < 0 ? angle : -angle;
     }
 
-    public void ChangeFirePower(int delta)
+    public bool ChangeFirePower(int delta)
     {
+        int oldPower = firePower;
         firePower = Mathf.Clamp(firePower + delta, 100, 400);
         subWeapon.SetTamaNum(firePower / 100);
+        return oldPower < 400;
     }
 
     public void ChangeHyperPower(int delta)
@@ -87,5 +108,20 @@ public class PlayerStateManager
             activeHyper = 0;
             hyperPower = 0;
         }
+    }
+
+    public bool AddScore(int score, bool full)
+    {
+        float rate = 1f;
+        if (!full)
+        {
+            float heightDelta = fullScoreHeight - playerObj.transform.position.y;
+            full = heightDelta <= 0;
+            rate = Mathf.Clamp(1 - heightDelta / scoreHeightScale, 0, 1);
+        }
+        int scoreDelta = (int)(score * rate / 10) * 10;
+        scoreDeltaList.Add(new ScoreDeltaInfo(scoreDelta, full));
+        playerScore += scoreDelta;
+        return full;
     }
 }

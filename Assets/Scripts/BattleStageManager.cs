@@ -114,9 +114,9 @@ public class BattleStageManager : MonoBehaviour
         battleManager.RangeEnemyDamage(centerPos, range, damage);
     }
 
-    public void RangeBulletEliminate(Vector3 centerPos, float range)
+    public void RangeBulletEliminate(Vector3 centerPos, float range, bool point)
     {
-        battleManager.RangeBulletEliminate(centerPos, range);
+        battleManager.RangeBulletEliminate(centerPos, range, point);
     }
 
     public void AddRangeTask(RangeTask task)
