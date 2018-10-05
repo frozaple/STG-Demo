@@ -28,10 +28,6 @@ public class GameObjectPool
         else
         {
             obj = GameObject.Instantiate(primaryObject, poolObject.transform);
-            PoolObject poolObj = obj.GetComponent<PoolObject>();
-            if (poolObj == null)
-                poolObj = obj.AddComponent<PoolObject>();
-            poolObj.poolName = poolName;
         }
 
         return obj;
@@ -48,6 +44,7 @@ public class GameResourceManager
 {
     private GameObject objectPoolRoot;
     private Dictionary<string, GameObjectPool> objectPools = new Dictionary<string, GameObjectPool>();
+    private Dictionary<Transform, GameObjectPool> transToPools = new Dictionary<Transform, GameObjectPool>();
 
     public void Init()
     {
@@ -66,21 +63,21 @@ public class GameResourceManager
             objPool.poolObject.transform.parent = objectPoolRoot.transform;
             objPool.poolObject.transform.localPosition = Vector3.zero;
             objectPools.Add(name, objPool);
+            transToPools.Add(objPool.poolObject.transform, objPool);
         }
         return objPool.GetObject();
     }
 
     public void Despawn(GameObject obj)
     {
-        PoolObject poolObj = obj.GetComponent<PoolObject>();
-        if (poolObj == null)
+        Transform poolTrans = obj.transform.parent;
+        if (poolTrans == null)
         {
             GameObject.Destroy(obj);
             return;
         }
-        string name = poolObj.poolName;
         GameObjectPool objPool;
-        objectPools.TryGetValue(name, out objPool);
+        transToPools.TryGetValue(poolTrans, out objPool);
         if (objPool == null)
         {
             GameObject.Destroy(obj);
