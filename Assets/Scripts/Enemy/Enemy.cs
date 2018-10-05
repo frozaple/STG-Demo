@@ -23,11 +23,6 @@ public class Enemy : BattleObject
     public int specialDrop;
     public int dropRange;
 
-    void Awake()
-    {
-        useScript = true;
-    }
-
     void Update()
     {
         if (hp <= 0)

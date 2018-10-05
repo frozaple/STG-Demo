@@ -18,7 +18,7 @@ public enum CollisionType
     Ray = 3,
 }
 
-public class BattleObject : MonoBehaviour
+public abstract class BattleObject : MonoBehaviour
 {
     [HideInInspector]
     public BattleObjectType objectType;
@@ -31,7 +31,6 @@ public class BattleObject : MonoBehaviour
     [HideInInspector]
     public bool valid = true;
     protected bool destroy = false;
-    protected bool useScript = false;
 
     protected void OnEnable()
     {
@@ -48,12 +47,12 @@ public class BattleObject : MonoBehaviour
     void LateUpdate()
     {
         if (destroy)
-            BattleStageManager.Instance.DespawnObject(gameObject, useScript);
+            BattleStageManager.Instance.DespawnObject(gameObject);
     }
 
     void OnDrawGizmos()
     {
-        Gizmos.color = Color.green;
+        Gizmos.color = objectType == BattleObjectType.Enemy ? Color.red : Color.green;
         if (collisionType == CollisionType.Circle)
             Gizmos.DrawWireSphere(transform.position, radius);
         else if (collisionType == CollisionType.Box)
@@ -136,7 +135,5 @@ public class BattleObject : MonoBehaviour
         return false;
     }
 
-    virtual public void OnCollision(BattleObject target)
-    {
-    }
+    abstract public void OnCollision(BattleObject target);
 }

@@ -29,13 +29,11 @@ public class BattleStageManager : MonoBehaviour
 
     private GameResourceManager resourceManager;
     private BattleObjectManager battleManager;
-    private BattleScriptManager scriptManager;
     private SpriteManager spriteManager;
     private PlayerStateManager playerManager;
 
     private System.Random battleRandom;
     public CameraShake camShakeEffect;
-    public BackgroundEffect backgroundEffect;
 
     void Awake()
     {
@@ -44,8 +42,6 @@ public class BattleStageManager : MonoBehaviour
         resourceManager.Init();
         battleManager = new BattleObjectManager();
         battleManager.Init();
-        scriptManager = new BattleScriptManager();
-        scriptManager.Init();
         spriteManager = new SpriteManager();
         spriteManager.InitSprites();
         playerManager = new PlayerStateManager();
@@ -63,13 +59,7 @@ public class BattleStageManager : MonoBehaviour
     void Update()
     {
         battleManager.Update();
-        scriptManager.Update();
         playerManager.Update();
-    }
-
-    void OnDestroy()
-    {
-        scriptManager.Dispose();
     }
 
     // -------------------------- resource manager --------------------------
@@ -79,12 +69,9 @@ public class BattleStageManager : MonoBehaviour
         return resourceManager.Spawn(name);
     }
 
-    public void DespawnObject(GameObject obj, bool scriptDespawn = false)
+    public void DespawnObject(GameObject obj)
     {
-        if (scriptDespawn)
-            scriptManager.Despawn(obj);
-        else
-            resourceManager.Despawn(obj);
+        resourceManager.Despawn(obj);
     }
 
     // -------------------------- battle manager --------------------------
@@ -177,6 +164,6 @@ public class BattleStageManager : MonoBehaviour
 
     public void AddWaveEffect(Vector2 center, float spd, float duration, float width, float offset)
     {
-        backgroundEffect.AddWaveEffect(center, spd, duration, width, offset);
+        // backgroundEffect.AddWaveEffect(center, spd, duration, width, offset);
     }
 }

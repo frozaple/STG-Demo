@@ -32,7 +32,6 @@ public class EnemyBullet : BattleObject
 
     void Awake()
     {
-        useScript = true;
         renderer = GetComponent<SpriteRenderer>();
     }
 

@@ -1,4 +1,6 @@
-﻿Shader "Custom/BackgroundEffect"
+﻿// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
+
+Shader "Custom/BackgroundEffect"
 {
 	Properties
 	{
@@ -45,7 +47,7 @@
                 float off = sin(clamp(1 - (dis - _WaveRadius) / _WaveVector.z, 0, 1) * 3.14) * _WaveVector.w;
                 v.vertex.xy += vec * off / dis;
                 #endif
-				o.vertex = mul(UNITY_MATRIX_MVP, v.vertex);
+				o.vertex = UnityObjectToClipPos(v.vertex);
 				o.uv = v.uv;
 				return o;
 			}

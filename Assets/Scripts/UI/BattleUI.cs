@@ -45,11 +45,11 @@ public class BattleUI : MonoBehaviour {
     {
         imgLife = lifeUI.GetComponentsInChildren<SpriteRenderer>();
         imgSpell = spellUI.GetComponentsInChildren<SpriteRenderer>();
-        imgScoreDot = scoreUI.transform.FindChild("Dot").GetComponentsInChildren<SpriteRenderer>();
-        imgScoreNum = scoreUI.transform.FindChild("Num").GetComponentsInChildren<SpriteRenderer>();
+        imgScoreDot = scoreUI.transform.Find("Dot").GetComponentsInChildren<SpriteRenderer>();
+        imgScoreNum = scoreUI.transform.Find("Num").GetComponentsInChildren<SpriteRenderer>();
         imgMaxPointNum = maxPointUI.GetComponentsInChildren<SpriteRenderer>();
-        imgHyper = hyperUI.transform.FindChild("ImgHyper").GetComponent<SpriteRenderer>();
-        imgHyperRune = hyperUI.transform.FindChild("Runes").GetComponentsInChildren<SpriteRenderer>();
+        imgHyper = hyperUI.transform.Find("ImgHyper").GetComponent<SpriteRenderer>();
+        imgHyperRune = hyperUI.transform.Find("Runes").GetComponentsInChildren<SpriteRenderer>();
 
         lastScore = -1;
         lastHyper = -1;
