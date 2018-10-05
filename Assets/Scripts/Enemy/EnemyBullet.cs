@@ -27,13 +27,7 @@ public class EnemyBullet : BattleObject
     public MovingBorder movingBorder;
     private bool selfRotate;
     private Vector3 moveDir;
-    new private SpriteRenderer renderer;
     private int eliminateColorIndex;
-
-    void Awake()
-    {
-        renderer = GetComponent<SpriteRenderer>();
-    }
 
     void Update()
     {
@@ -57,16 +51,6 @@ public class EnemyBullet : BattleObject
         if (posX < movingBorder.left || posX > movingBorder.right ||
             posY < movingBorder.bottom || posY > movingBorder.top)
             destroy = true;
-    }
-
-    public void SetAppearance(int shape, int color)
-    {
-        Sprite sprite = BattleStageManager.Instance.GetBulletSprite(shape, color);
-        renderer.sprite = sprite;
-        if (color >= 0 && color < eliminateColors.Length)
-            eliminateColorIndex = color;
-        else
-            eliminateColorIndex = 0;
     }
 
     public void SetSelfRotate(bool rotate)

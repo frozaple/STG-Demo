@@ -56,14 +56,8 @@ public struct RangeTask {
 
 public class BattleObjectManager
 {
-    private Dictionary<BattleObjectType, List<BattleObject>> objListDict;
-    private List<RangeTask> pendingRangeTask;
-
-    public void Init()
-    {
-        objListDict = new Dictionary<BattleObjectType, List<BattleObject>>(new BattleObjectTypeComparer());
-        pendingRangeTask = new List<RangeTask>();
-    }
+    private Dictionary<BattleObjectType, List<BattleObject>> objListDict = new Dictionary<BattleObjectType, List<BattleObject>>(new BattleObjectTypeComparer());
+    private List<RangeTask> pendingRangeTask = new List<RangeTask>();
 
     public void AddObject(BattleObject obj)
     {

@@ -29,7 +29,6 @@ public class BattleStageManager : MonoBehaviour
 
     private GameResourceManager resourceManager;
     private BattleObjectManager battleManager;
-    private SpriteManager spriteManager;
     private PlayerStateManager playerManager;
 
     private System.Random battleRandom;
@@ -41,9 +40,6 @@ public class BattleStageManager : MonoBehaviour
         resourceManager = new GameResourceManager();
         resourceManager.Init();
         battleManager = new BattleObjectManager();
-        battleManager.Init();
-        spriteManager = new SpriteManager();
-        spriteManager.InitSprites();
         playerManager = new PlayerStateManager();
     }
 
@@ -89,11 +85,6 @@ public class BattleStageManager : MonoBehaviour
     public void RemoveBattleObject(BattleObject obj)
     {
         battleManager.RemoveObject(obj);
-    }
-
-    public Sprite GetBulletSprite(int shape, int color)
-    {
-        return spriteManager.GetBulletSprite(shape, color);
     }
 
     public void RangeEnemyDamage(Vector3 centerPos, float range, int damage)
