@@ -29,7 +29,7 @@ public class EnemyBullet : BattleObject
     private Vector3 moveDir;
     private int eliminateColorIndex;
 
-    void Update()
+    public override void InternalUpdate()
     {
         if (selfRotate)
         {

@@ -35,7 +35,7 @@ public struct RangeTask {
         enemyDamage = damage;
     }
 
-    public float Update()
+    public float InternalUpdate()
     {
         int oldTimeInt = (int)(passTime);
         passTime += Time.timeScale;
@@ -86,10 +86,24 @@ public class BattleObjectManager
         return null;
     }
 
-    public void Update()
+    public void InternalUpdate()
     {
+        UpdateObjects();
         UpdateRangeTask();
         CollisionCheck();
+    }
+
+    private void UpdateObjects()
+    {
+        for (BattleObjectType t = BattleObjectType.Item; t >= BattleObjectType.Player; --t)
+        {
+            List<BattleObject> objList = GetObjectList(t);
+            if (objList != null)
+            {
+                for (int i = objList.Count - 1; i >= 0; --i)
+                    objList[i].InternalUpdate();
+            }
+        }
     }
 
     private void CollisionCheck()
@@ -104,10 +118,12 @@ public class BattleObjectManager
         List<BattleObject> objList1, objList2;
         if (objListDict.TryGetValue(type1, out objList1) && objListDict.TryGetValue(type2, out objList2))
         {
-            foreach (BattleObject obj1 in objList1)
+            for (int i1 = objList1.Count - 1; i1 >= 0; --i1)
             {
-                foreach (BattleObject obj2 in objList2)
+                BattleObject obj1 = objList1[i1];
+                for (int i2 = objList2.Count - 1; i2 >= 0; --i2)
                 {
+                    BattleObject obj2 = objList2[i2];
                     if (obj1.valid && obj2.valid && obj1.CheckCollision(obj2))
                     {
                         obj1.OnCollision(obj2);
@@ -124,8 +140,9 @@ public class BattleObjectManager
         List<BattleObject> enemyList = GetObjectList(BattleObjectType.Enemy);
         if (enemyList == null)
             return;
-        foreach (BattleObject enemyObj in enemyList)
+        for (int i = enemyList.Count - 1; i >= 0; --i)
         {
+            BattleObject enemyObj = enemyList[i];
             Vector3 disVec = enemyObj.transform.position - centerPos;
             if (disVec.sqrMagnitude < rangeSq)
             {
@@ -142,8 +159,9 @@ public class BattleObjectManager
         List<BattleObject> bulletList = GetObjectList(BattleObjectType.EnemyBullet);
         if (bulletList == null)
             return;
-        foreach (BattleObject bulletObj in bulletList)
+        for (int i = bulletList.Count - 1; i >= 0; --i)
         {
+            BattleObject bulletObj = bulletList[i];
             Vector3 disVec = bulletObj.transform.position - centerPos;
             if (disVec.sqrMagnitude < rangeSq)
             {
@@ -172,7 +190,7 @@ public class BattleObjectManager
         for (int i = taskCount - 1; i >= 0; --i)
         {
             RangeTask task = pendingRangeTask[i];
-            float range = task.Update();
+            float range = task.InternalUpdate();
             if (range > 0)
             {
                 RangeBulletEliminate(task.rangePos, range, task.getPoint);

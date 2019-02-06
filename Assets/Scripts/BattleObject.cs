@@ -32,17 +32,19 @@ public abstract class BattleObject : MonoBehaviour
     public bool valid = true;
     protected bool destroy = false;
 
-    protected void OnEnable()
+    protected virtual void OnEnable()
     {
         valid = true;
         destroy = false;
         BattleStageManager.Instance.AddBattleObject(this);
     }
 
-    protected void OnDisable()
+    protected virtual void OnDisable()
     {
         BattleStageManager.Instance.RemoveBattleObject(this);
     }
+
+    public abstract void InternalUpdate();
 
     void LateUpdate()
     {

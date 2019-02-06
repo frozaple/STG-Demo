@@ -28,8 +28,6 @@ public class BattleObjectEditor : Editor {
     {
         base.OnInspectorGUI();
 
-        serializedObject.Update();
-
         EditorGUILayout.Space();
         EditorGUILayout.LabelField("Battle Object", labelStyle);
         EditorGUILayout.PropertyField(objectType);

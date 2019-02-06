@@ -17,7 +17,7 @@ public class PlayerBullet : BattleObject, IDamageObject
         get { return damage; }
     }
 
-    void Update ()
+    public override void InternalUpdate()
     {
         if (transform.position.y < 240)
             transform.Translate(flySpeed * Time.timeScale, 0, 0);

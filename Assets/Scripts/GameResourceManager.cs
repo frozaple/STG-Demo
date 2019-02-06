@@ -7,13 +7,11 @@ public class GameObjectPool
     public GameObjectPool(string objName, int initSize = 8)
     {
         poolObject = new GameObject("<" + objName + ">Pool");
-        poolName = objName;
         primaryObject = Resources.Load<GameObject>(objName);
         cachedObjects = new Stack<GameObject>(initSize);
     }
 
     public GameObject poolObject;
-    private string poolName;
     private GameObject primaryObject;
     private Stack<GameObject> cachedObjects;
 

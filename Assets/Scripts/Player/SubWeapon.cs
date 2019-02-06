@@ -35,12 +35,8 @@ public class SubWeapon : MonoBehaviour {
     public ShootAngleInfoSet[] angleInfoSet;
     private float subWeaponLerp;
 
-    void Start()
+    public void InternalUpdate()
     {
-        SetTamaPos(0);
-    }
-
-    void Update () {
         transform.localPosition = Vector3.Lerp(transform.localPosition, playerTrans.localPosition, followPlayerLerp);
 	}
 

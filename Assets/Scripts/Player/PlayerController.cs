@@ -46,7 +46,7 @@ public class PlayerController : BattleObject
     private float hyperActiveTime;
     private float hyperEffectScale;
 
-    new private SpriteRenderer renderer;
+    private SpriteRenderer playerRenderer;
     private Animator animator;
     private int speedParamID;
     private int slowEffParamID;
@@ -58,13 +58,13 @@ public class PlayerController : BattleObject
         shootAccumulation = 0;
         reborn = false;
         playerMgr = BattleStageManager.Instance.GetPlayerManager();
-        renderer = GetComponent<SpriteRenderer>();
+        playerRenderer = GetComponent<SpriteRenderer>();
         animator = GetComponent<Animator>();
         speedParamID = Animator.StringToHash("Horizontal Speed");
         slowEffParamID = Animator.StringToHash("SlowEff Show");
     }
 
-    void Update()
+    public override void InternalUpdate()
     {
         if (playerMgr.playerDead)
         {
@@ -88,18 +88,20 @@ public class PlayerController : BattleObject
                 PlayerShoot();
             }
         }
+
+        subWeapon.InternalUpdate();
         if (hyperEffect.activeSelf)
             UpdateHyperEffect();
     }
 
     private void DoDeath()
     {
-        float a = renderer.color.a;
+        float a = playerRenderer.color.a;
         a -= deathAlphaDelta * Time.timeScale;
         if (a > 0)
         {
             transform.localScale += deathScaleDelta * Time.timeScale;
-            renderer.color = new Color(1, 1, 1, a);
+            playerRenderer.color = new Color(1, 1, 1, a);
         }
         else
         {
@@ -107,7 +109,7 @@ public class PlayerController : BattleObject
             BattleStageManager.Instance.AddRangeTask(newTask);
             transform.position = new Vector3(0, rebornStartHeight);
             transform.localScale = Vector3.one;
-            renderer.color = Color.white;
+            playerRenderer.color = Color.white;
             subWeapon.gameObject.SetActive(true);
             subWeapon.transform.position = transform.position;
             reborn = true;
@@ -156,12 +158,12 @@ public class PlayerController : BattleObject
             if (lastBlink != blink)
             {
                 lastBlink = blink;
-                renderer.color = blink ? Color.blue : Color.white;
+                playerRenderer.color = blink ? Color.blue : Color.white;
             }
         }
         else
         {
-            renderer.color = Color.white;
+            playerRenderer.color = Color.white;
             invincibleDuration = 0;
         }
     }
@@ -255,7 +257,7 @@ public class PlayerController : BattleObject
     {
         if (Input.GetAxis("Bomb") > 0)
         {
-            if (playerMgr.playerSpell > 0 && playerMgr.activeBomb == 0)
+            if (playerMgr.playerSpell > 0 && playerMgr.activeBomb.Count == 0)
             {
                 playerMgr.playerSpell--;
                 dyingTime = 0;

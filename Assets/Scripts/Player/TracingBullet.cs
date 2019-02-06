@@ -25,13 +25,13 @@ public class TracingBullet : BattleObject, IDamageObject
         accelCos = Mathf.Cos(radSpeed);
     }
 
-    new void OnEnable()
+    protected override void OnEnable()
     {
         base.OnEnable();
         curSpeed = minSpeed;
     }
 
-    void Update()
+    public override void InternalUpdate()
     {
         transform.Translate(curSpeed * Time.timeScale, 0, 0);
         ProcessTracing();
@@ -52,8 +52,9 @@ public class TracingBullet : BattleObject, IDamageObject
         if (enemyList != null)
         {
             float lastDisSq = 0;
-            foreach (BattleObject enemy in enemyList)
+            for (int i = enemyList.Count - 1; i >= 0; --i)
             {
+                BattleObject enemy = enemyList[i];
                 disVec = enemy.transform.position - transform.position;
                 if (tracingEnemy == null || lastDisSq > disVec.sqrMagnitude)
                 {
@@ -62,7 +63,6 @@ public class TracingBullet : BattleObject, IDamageObject
                 }
             }
         }
-
 
         if (tracingEnemy != null)
         {

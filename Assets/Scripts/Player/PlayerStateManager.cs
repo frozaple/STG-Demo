@@ -33,7 +33,7 @@ public class PlayerStateManager
 
     public bool playerDead;
     public float activeHyper;
-    public int activeBomb;
+    public List<BombBullet> activeBomb;
 
     public void InitPlayer()
     {
@@ -46,17 +46,19 @@ public class PlayerStateManager
         subWeapon = subWeaponObj.GetComponent<SubWeapon>();
         playerObj.GetComponent<PlayerController>().subWeapon = subWeapon;
         subWeapon.playerTrans = playerObj.transform;
+        subWeapon.SetTamaNum(1);
+        subWeapon.SetTamaPos(0);
 
         playerLife = 2;
         playerSpell = 3;
         firePower = 100;
-        subWeapon.SetTamaNum(1);
         hyperPower = 0;
 
         playerScore = 0;
         maxPoint = 10000;
 
         scoreDeltaList = new List<ScoreDeltaInfo>();
+        activeBomb = new List<BombBullet>();
     }
 
     public Vector3 GetPlayerPos()
@@ -90,13 +92,18 @@ public class PlayerStateManager
         return playerObj.transform;
     }
 
-    public void Update()
+    public void InternalUpdate()
     {
         if (activeHyper > 0)
         {
             activeHyper -= Time.timeScale;
             if (activeHyper <= 0)
                 hyperPower = 0;
+        }
+        if (activeBomb.Count > 0)
+        {
+            for (int i = activeBomb.Count - 1; i >= 0; --i)
+                activeBomb[i].InternalUpdate();
         }
     }
 

@@ -63,10 +63,11 @@ public class BombBullet : MonoBehaviour
         transform.position = playerTrans.position;
         subSetTrans.transform.localPosition = Vector3.zero;
 
-        strikeBeginTime = rotateTime + playerMgr.activeBomb * 2f;
-        initRotation = playerMgr.activeBomb * 60f;
+        int activeBombNum = playerMgr.activeBomb.Count;
+        strikeBeginTime = rotateTime + activeBombNum * 2f;
+        initRotation = activeBombNum * 60f;
         transform.eulerAngles = new Vector3(0, 0, initRotation);
-        playerMgr.activeBomb++;
+        playerMgr.activeBomb.Add(this);
 
         for (int i = 0; i < subCount; ++i)
         {
@@ -77,7 +78,7 @@ public class BombBullet : MonoBehaviour
         }
     }
 
-    void Update()
+    public void InternalUpdate()
     {
         bool doFollow = activateTime <= followTime;
         bool doRotate = activateTime <= rotateTime;
@@ -164,7 +165,7 @@ public class BombBullet : MonoBehaviour
     {
         if (activateTime > strikeBeginTime + strikeDuration + explosionDuration)
         {
-            BattleStageManager.Instance.GetPlayerManager().activeBomb--;
+            BattleStageManager.Instance.GetPlayerManager().activeBomb.Remove(this);
             BattleStageManager.Instance.DespawnObject(gameObject);
         }
         else

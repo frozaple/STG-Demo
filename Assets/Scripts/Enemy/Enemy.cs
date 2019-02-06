@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public enum BreakEffectType
@@ -23,7 +22,20 @@ public class Enemy : BattleObject
     public int specialDrop;
     public int dropRange;
 
-    void Update()
+    private int initHp;
+
+    void Awake()
+    {
+        initHp = hp;
+    }
+
+    protected override void OnEnable()
+    {
+        base.OnEnable();
+        hp = initHp;
+    }
+
+    public override void InternalUpdate()
     {
         if (hp <= 0)
         {

@@ -54,7 +54,7 @@ public class Item : BattleObject
         transform.eulerAngles = Vector3.zero;
     }
 
-    void Update()
+    public override void InternalUpdate()
     {
         PlayerStateManager playerManager = BattleStageManager.Instance.GetPlayerManager();
         Vector3 playerPos = BattleStageManager.Instance.GetPlayerPos();

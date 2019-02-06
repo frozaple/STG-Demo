@@ -28,6 +28,7 @@ public class BattleStageManager : MonoBehaviour
     }
 
     private GameResourceManager resourceManager;
+    
     private BattleObjectManager battleManager;
     private PlayerStateManager playerManager;
 
@@ -39,6 +40,7 @@ public class BattleStageManager : MonoBehaviour
         Instance = this;
         resourceManager = new GameResourceManager();
         resourceManager.Init();
+        
         battleManager = new BattleObjectManager();
         playerManager = new PlayerStateManager();
     }
@@ -47,15 +49,15 @@ public class BattleStageManager : MonoBehaviour
     {
         Application.targetFrameRate = 60;
         Screen.SetResolution(960, 720, false);
-
+        
         playerManager.InitPlayer();
         battleRandom = new System.Random();
     }
 
     void Update()
     {
-        battleManager.Update();
-        playerManager.Update();
+        battleManager.InternalUpdate();
+        playerManager.InternalUpdate();
     }
 
     // -------------------------- resource manager --------------------------
